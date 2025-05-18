@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tourdb
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1237tyu
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mysql+pymysql://admin:1237tyu@db:3306/tourdb
+      - SECRET_KEY=your-secret-key-here
+      - DEBUG=False
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "while ! mysqladmin ping -h db --silent; do sleep 1; done &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+
+networks:
+  app-network:
+    driver: bridge

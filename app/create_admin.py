@@ -1,7 +1,7 @@
 import sys
-from database import SessionLocal
-from models import User
-from utils import hash_password
+from app.database import SessionLocal
+from app.models import User
+from app.utils import hash_password
 
 def create_admin():
     db = SessionLocal()

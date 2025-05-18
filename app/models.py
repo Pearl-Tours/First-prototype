@@ -25,7 +25,7 @@ class Session(Base):
 class Tour(Base):
     __tablename__ = "tours"
     id = Column(Integer, primary_key=True, index=True)
-    Title= Column(String(100), index=True)
+    title= Column(String(100), index=True)
     description = Column(String(500))
     price = Column(Float)
     duration= Column(String(50))
