@@ -1,0 +1,78 @@
+:root {
+  --primary-blue: #033d6f;
+  --hover-blue: #003366;
+  --btn-light-bg-hover: #e6f0ff;
+  --nav-link-color: rgba(255, 255, 255, 0.85);
+  --nav-link-hover: #ffffff;
+}
+
+/* Responsive Offcanvas Width */
+@media (min-width: 576px) {
+  .offcanvas {
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .offcanvas {
+    width: 60% !important;
+  }
+}
+
+/* Navbar Background */
+.navbar-custom-blue {
+  background-color: var(--primary-blue) !important;
+}
+
+/* Nav Link Transitions */
+.navbar-nav .nav-link {
+  transition: all 0.5s ease;
+  padding: 0.5rem 1rem;
+  color: var(--nav-link-color);
+}
+
+.navbar-nav .nav-link:hover {
+  transform: translateY(-3px);
+  opacity: 0.8;
+  color: var(--nav-link-hover);
+}
+
+/* Offcanvas Animation */
+.offcanvas {
+  transition: transform 0.4s ease-in-out;
+}
+
+/* Button Styling */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+/* Signup Button Hover */
+.btn-light.text-primary:hover {
+  background-color: var(--btn-light-bg-hover);
+  color: var(--hover-blue);
+}
+
+/* Login Button Hover */
+.btn-outline-light:hover {
+  background-color: white;
+  color: var(--hover-blue);
+}
+
+/* Optional: Improve visibility for offcanvas nav links */
+.offcanvas .nav-link {
+  color: var(--nav-link-color);
+}
+
+.offcanvas .nav-link:hover {
+  color: var(--nav-link-hover);
+}
+
+/* Optional: Make offcanvas title look nicer */
+.offcanvas-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
