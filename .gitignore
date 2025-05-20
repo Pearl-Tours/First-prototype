@@ -19,5 +19,5 @@ build/
 .idea/
 *.swp
 # Ignore test database file
-test db
+test.db
 
