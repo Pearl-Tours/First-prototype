@@ -22,7 +22,8 @@
             <div class="d-none d-lg-flex mx-auto">
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/tours"><i class="bi bi-map"></i> Tours</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tours"><i class="bi bi-map"></i> Tours</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="/about"><i class="bi bi-info-circle"></i> About
                             Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="/partnership"><i class="bi bi-people"></i>
@@ -86,20 +87,23 @@
         </div>
     </nav>
 
-
-
-    <!-- Hero Section -->
-    <!-- <div class="hero bg-primary text-white py-5">
-        <div class="container text-center">
-            <h1 class="display-4">Discover Uganda</h1>
-            <p class="lead">Experience the Pearl of Africa</p>
-            <a href="/tours" class="btn btn-light btn-lg">Explore Tours</a>
-            <a href="/login" class="btn btn-light btn-lg">LOGIN</a>
-            <a href="/signup" class="btn btn-light btn-lg">SIGNUP WITH US</a>
+    <section class="video-hero position-relative overflow-hidden">
+        <div class="video-container position-absolute w-100 h-100 top-0 start-0">
+            <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
+                <source src="static/vds/11760750-uhd_4096_2160_30fps.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
-    </div> -->
-
+        <div
+            class="video-overlay position-relative text-white text-center d-flex flex-column justify-content-center align-items-center h-100">
+            <h1 class="display-3 fw-bold">PEARL TOURS</h1>
+            <h2 class="h4 fw-light">Discover Uganda</h2>
+            <p class="lead mb-4">Experience the Pearl of Africa</p>
+            <a href="/tours" class="btn btn-outline-light btn-lg">Explore Tours</a>
+        </div>
+    </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

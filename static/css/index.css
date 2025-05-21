@@ -76,3 +76,23 @@
   text-align: center;
   width: 100%;
 }
+ /* video */
+ .video-hero {
+    height: 100vh;
+    background-color: black;
+}
+
+.video-container video {
+    object-fit: cover;
+}
+
+.video-overlay {
+    z-index: 2;
+    padding: 2rem;
+    background: rgba(0, 0, 0, 0.4); /* optional dark overlay */
+    backdrop-filter: blur(0.5px); /* nice blur effect */
+}
+
+.video-container {
+    z-index: 1;
+}
