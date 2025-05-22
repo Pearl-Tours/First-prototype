@@ -1,9 +1,9 @@
 :root {
-  --primary-blue: #033d6f;
-  --hover-blue: #003366;
+  --primary-blue: #003366;
+  --hover-blue: #0b3b6b;
   --btn-light-bg-hover: #e6f0ff;
-  --nav-link-color: rgba(255, 255, 255, 0.85);
-  --nav-link-hover: #ffffff;
+  --nav-link-color: #ffffff;
+  --nav-link-hover: ;
 }
 
 /* Responsive Offcanvas Width */
@@ -24,22 +24,36 @@
   background-color: var(--primary-blue) !important;
 }
 
-/* Nav Link Transitions */
-.navbar-nav .nav-link {
+/* Correct nav-link base styling */
+.navbar-nav .nav-link,
+.offcanvas .nav-link,
+.nav-link {
+  color: var(--nav-link-color) !important;
   transition: all 0.5s ease;
   padding: 0.5rem 1rem;
-  color: var(--nav-link-color);
+}
+.btn-light {
+  transition: all 0.5s ease;
+  padding: 0.5rem 1rem;
 }
 
-.navbar-nav .nav-link:hover {
+/* Hover effect */
+.btn-light:hover,
+.navbar-nav .nav-link:hover,
+.offcanvas .nav-link:hover,
+.nav-link:hover {
+  color: var(--nav-link-hover) !important;
   transform: translateY(-3px);
   opacity: 0.8;
-  color: var(--nav-link-hover);
 }
 
 /* Offcanvas Animation */
 .offcanvas {
   transition: transform 0.4s ease-in-out;
+}
+
+.nav-link {
+  color: white;
 }
 
 /* Button Styling */
@@ -76,23 +90,26 @@
   text-align: center;
   width: 100%;
 }
- /* video */
- .video-hero {
-    height: 100vh;
-    background-color: black;
+
+/* video */
+.video-hero {
+  height: 100vh;
+  background-color: black;
 }
 
 .video-container video {
-    object-fit: cover;
+  object-fit: cover;
 }
 
 .video-overlay {
-    z-index: 2;
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.4); /* optional dark overlay */
-    backdrop-filter: blur(0.5px); /* nice blur effect */
+  z-index: 2;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.4);
+  /* optional dark overlay */
+  backdrop-filter: blur(0.5px);
+  /* nice blur effect */
 }
 
 .video-container {
-    z-index: 1;
+  z-index: 1;
 }
