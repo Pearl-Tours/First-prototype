@@ -18,6 +18,7 @@ build/
 .vscode/
 .idea/
 *.swp
+*.db
 # Ignore test database file
 test.db
 
