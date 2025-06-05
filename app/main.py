@@ -6,6 +6,7 @@ from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 from app.routes import router
 from app.database import engine, Base
+from dotenv import load_dotenv
 
 app = FastAPI()
 
@@ -22,3 +23,5 @@ app.include_router(router)
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
+
+

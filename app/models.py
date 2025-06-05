@@ -35,6 +35,11 @@ class Tour(Base):
     updated_at= Column(DateTime,default=datetime.utcnow,onupdate=datetime.utcnow)
     is_active= Column(Boolean, default=True)
     images= relationship("TourImage", backref="tour",cascade="all, delete-orphan")
+    # Define a method to calculate the price based on adults, kids, and private tour status
+    def calculate_price(self, adults: int, kids: int, is_private: bool = False) -> float:
+        """Calculate total price including private tour premium"""
+        base_price = (adults + kids) * self.price
+        return base_price * 1.35 if is_private else base_price
     
 class TourImage(Base):
     __tablename__ = "tour_images"
@@ -42,3 +47,23 @@ class TourImage(Base):
     tour_id = Column(Integer, ForeignKey("tours.id"))
     image_url = Column(String(200))
     is_primary = Column(Boolean, default=False)
+    
+class Booking(Base):
+    __tablename__ = "bookings"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    tour_id = Column(Integer, ForeignKey("tours.id"))
+    adults = Column(Integer)
+    kids = Column(Integer)
+    tour_date = Column(DateTime)
+    total_price = Column(Float)
+    is_private = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    user= relationship("User", backref="bookings")
+    tour= relationship("Tour", backref="bookings")
+    payment_method = Column(String(20))
+    payment_id = Column(String(50))
+    
+    @property
+    def participant_count(self):
+        return self.adults + self.kids

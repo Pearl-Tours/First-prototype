@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.models import User, Session, Tour
 from fastapi import Request
 from app.database import get_db
+from typing import Optional
 
 
 SESSION_EXPIRE_MINUTES = 30
@@ -35,7 +36,8 @@ def create_session(db: Session, user_id: int) -> str:
     return session.id
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
-    session_id = request.cookies.get("session_id")
+    session_id = request.cookies.get("auth_session_id")
+    print(f"auth_Session ID from cookies: {session_id}")
     if not session_id:
         return None
     
@@ -48,6 +50,7 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
         return None
     
     user = db.query(User).filter(User.id == session.user_id).first()
+    print(f"Current user: {user}")
     return user
 
 def delete_session(db: Session, session_id: str):
@@ -97,6 +100,17 @@ async def send_email(to_email: str, subject: str, body: str):
     except Exception as e:
         print(f"Failed to send email to {to_email}. Error: {str(e)}")
         raise e  
+        
+
+async def get_authenticated_user(user: User = Depends(get_current_user)) -> User:
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_307_TEMPORARY_REDIRECT,
+            detail="Authentication required",
+            headers={"Location": "/signup"}
+        )
+    return user
+
         
  
  

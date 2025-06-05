@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Uganda Tours</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .payment-card {
+            max-width: 600px;
+            margin: 2rem auto;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 15px;
+        }
+        .payment-methods {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        #paypal-button-container, #stripe-button {
+            min-height: 50px;
+        }
+        .stripe-btn {
+            background: #635bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Uganda Tours</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="payment-card card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Complete Your Booking</h4>
+            </div>
+            <div class="card-body text-center">
+                <h5 class="card-title">{{ tour_title }}</h5>
+                <div class="alert alert-primary">
+                    <h4 class="mb-0">Total Amount: ${{ total_price }}</h4>
+                </div>
+
+                <div class="payment-methods">
+                    <!-- Stripe Button -->
+                    <button id="stripe-button" class="stripe-btn">
+                        Pay with Credit/Debit Card
+                    </button>
+                    
+                    <!-- PayPal Button -->
+                    <div id="paypal-button-container"></div>
+                </div>
+
+                <div class="text-muted small mt-4">
+                    <p>Secure payments processed by our partners</p>
+                    <p>Need help? Contact support@ugandatours.com</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stripe Script -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- PayPal Script -->
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD&disable-funding=credit,card"></script>
+
+    <script>
+        // Stripe Integration
+        const stripe = Stripe("{{ stripe_public_key }}");
+        
+        document.getElementById('stripe-button').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/create-stripe-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const { id: sessionId } = await response.json();
+                await stripe.redirectToCheckout({ sessionId });
+                
+            } catch (error) {
+                console.error('Stripe error:', error);
+                alert('Payment processing failed. Please try again.');
+            }
+        });
+
+        // PayPal Integration
+        paypal.Buttons({
+            style: {
+                layout: 'vertical',
+                color: 'gold',
+                shape: 'rect',
+                label: 'paypal'
+            },
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '{{ total_price }}',
+                            currency_code: 'USD'
+                        },
+                        description: '{{ tour_title }} Tour Booking'
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    fetch('/complete_booking', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            paymentID: details.id,
+                            status: details.status
+                        })
+                    }).then(response => {
+                        if (response.ok) {
+                            window.location.href = '/confirmation';
+                        } else {
+                            alert('Payment processing failed');
+                        }
+                    });
+                });
+            },
+            onError: function(err) {
+                console.error('PayPal error:', err);
+                alert('Payment processing failed. Please try again.');
+            }
+        }).render('#paypal-button-container');
+    </script>
+</body>
+</html>
