@@ -10,6 +10,8 @@ from app.models import User, Session, Tour
 from fastapi import Request
 from app.database import get_db
 from typing import Optional
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 SESSION_EXPIRE_MINUTES = 30
@@ -70,7 +72,7 @@ async def get_current_admin(request: Request, db: Session = Depends(get_db)) -> 
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
     return user
 
-async def send_email(to_email: str, subject: str, body: str):
+def send_email(to_email: str, subject: str, body: str,is_html: bool = False):
     #smtp_server= "smtp.gmail.com"
     #smtp_port=587
     #smtp_user= "lubegarhyan639@gmail.com"
@@ -81,11 +83,15 @@ async def send_email(to_email: str, subject: str, body: str):
     smtp_password = os.getenv("SMTP_PASSWORD", "default-password")
 
     # Email sending logic
-    message = EmailMessage()
+    message = MIMEMultipart()
     message["From"] = smtp_user
     message["To"] = to_email
     message["Subject"] = subject
-    message.set_content(body)
+    #message.set_content(body)
+    
+    # Attach HTML or plain text body
+    mime_type = "html" if is_html else "plain"
+    message.attach(MIMEText(body, mime_type))
 
     try:
         with smtplib.SMTP(smtp_server, smtp_port) as server:
@@ -93,8 +99,7 @@ async def send_email(to_email: str, subject: str, body: str):
             server.login(smtp_user, smtp_password)
             server.send_message(message)
             print(f"Email sent successfully to {to_email}")
-            print("SMTP_USER:", os.getenv("SMTP_USER"))
-            print("SMTP_PASSWORD:", os.getenv("SMTP_PASSWORD")) 
+            
 
         
     except Exception as e:
@@ -111,6 +116,53 @@ async def get_authenticated_user(user: User = Depends(get_current_user)) -> User
         )
     return user
 
+# def notify_subscribers(db:Session, tour: Tour):
+#     subscribers = db.query(User).filter(User.newsletter_subscribed == True).all()
+#     for subscriber in subscribers:
+#         send_tour_notification(subscriber.email, tour, subscriber.unsubscribe_token)
+def notify_subscribers(db: Session, tour_id: int):
+    # fetch full tour object
+    tour = db.query(Tour).filter(Tour.id == tour_id).first()
+    if not tour:
+        return
+
+    subscribers = db.query(User).filter(User.newsletter_subscribed == True).all()
+    for subscriber in subscribers:
+        send_tour_notification(subscriber.email, tour, subscriber.unsubscribe_token)
+
+
+def send_tour_notification(to_email: str, tour: Tour, unsubscribe_token: str):
+    unsubscribe_link = f"http://localhost:8000/unsubscribe_newsletter?token={unsubscribe_token}"
+    subject = f"New Tour Available: {tour.title}"
+    body = f"""
+    <html>
+    <body>
+        <h1>New Tour Available!</h1>
+        <p>Check out our latest tour: <strong>{tour.title}</strong></p>
+        <p>{tour.description}</p>
+        <p>Price: ${tour.price}</p>
+        <p>Duration: {tour.duration}</p>
+        <p>Locations: {tour.locations}</p>
         
- 
- 
+        <p>Visit our website to book now!</p>
+        <a href="http://localhost:8000/tours" style="
+           display:inline-block;
+           padding:10px 20px;
+           background-color:#007BFF;
+           color:white;
+           text-decoration:none;
+           border-radius:5px;
+           margin-top:10px;
+        ">View Tour Details</a>
+        <p style="margin-top:20px;">
+            <small>
+                <a href="{unsubscribe_link}" style="color:#6c757d;">Unsubscribe</a>
+            </small>
+        </p>
+    </body>
+    </html>
+    """
+    send_email(to_email, subject, body, is_html=True)
+    
+
+    

@@ -14,6 +14,8 @@ class User(Base):
     full_name = Column(String(100))
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
+    newsletter_subscribed = Column(Boolean, default=False)
+    unsubscribe_token=Column(String(36), default=lambda:str(uuid.uuid4()))
 
 class Session(Base):
     __tablename__ = "sessions"

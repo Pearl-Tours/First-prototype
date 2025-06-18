@@ -10,7 +10,7 @@ from fastapi.responses import HTMLResponse,RedirectResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from app.models import User, Session, Tour,TourImage, Booking
-from app.utils import get_current_user, create_session, delete_session,verify_password,hash_password, get_current_admin,send_email,get_authenticated_user
+from app.utils import get_current_user, create_session, delete_session,verify_password,hash_password, get_current_admin,send_email,get_authenticated_user,notify_subscribers
 from app.database import get_db
 from datetime import datetime
 from fastapi.encoders import jsonable_encoder
@@ -18,6 +18,7 @@ from datetime import timedelta
 from fastapi import File, UploadFile
 from sqlalchemy.orm import joinedload
 from fastapi.responses import JSONResponse
+from fastapi import BackgroundTasks,Query
 
 #from app.database import Sessionlocal as DBSession
 
@@ -117,6 +118,7 @@ async def admin_dashboard(request: Request, db: Session = Depends(get_db), user:
 # create a tour
 @router.post('/admin/tours/create', response_class=HTMLResponse)
 async def create_tour(
+    background_tasks: BackgroundTasks,
     title: str = Form(...),
     description: str = Form(...),
     price: float = Form(...),
@@ -170,6 +172,7 @@ async def create_tour(
             ))
 
         db.commit()
+        background_tasks.add_task(notify_subscribers,db, new_tour.id)
         return RedirectResponse(url="/admin/dashboard", status_code=303)
 
     except Exception as e:
@@ -218,24 +221,65 @@ async def update_tour(request: Request, tour_id: int, db: Session = Depends(get_
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_302_FOUND)
 
 #delete tour
+# @router.post('/admin/tours/delete/{tour_id}', response_class=HTMLResponse)
+# async def delete_tour(request: Request, tour_id: int, db: Session = Depends(get_db), user: Optional[User] = Depends(get_current_admin)):
+#     if not user.is_admin:
+#         raise HTTPException(status_code=403, detail="Not authorized to access this page")
+    
+#     tour = db.query(Tour).filter(Tour.id == tour_id).first()
+
+#     if not tour:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tour not found")
+    
+#     # Delete related images first
+#     db.query(TourImage).filter(TourImage.tour_id == tour.id).delete()
+
+#     db.delete(tour)
+#     db.commit()
+
+#     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_302_FOUND)
+
 @router.post('/admin/tours/delete/{tour_id}', response_class=HTMLResponse)
-async def delete_tour(request: Request, tour_id: int, db: Session = Depends(get_db), user: Optional[User] = Depends(get_current_admin)):
+async def delete_tour(
+    request: Request,
+    tour_id: int,
+    db: Session = Depends(get_db),
+    user: Optional[User] = Depends(get_current_admin)
+):
     if not user.is_admin:
         raise HTTPException(status_code=403, detail="Not authorized to access this page")
     
     tour = db.query(Tour).filter(Tour.id == tour_id).first()
 
     if not tour:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tour not found")
+        raise HTTPException(status_code=404, detail="Tour not found")
     
-    # Delete related images first
+    # Get related images before deleting
+    images = db.query(TourImage).filter(TourImage.tour_id == tour.id).all()
+
+    for img in images:
+        # Extract filename from image_url
+        # URL format: "/static/uploads/filename.jpg"
+        filename = img.image_url.split("/")[-1]
+        image_path = os.path.join("static", "uploads", filename)
+        
+        if os.path.exists(image_path):
+            try:
+                os.remove(image_path)
+                print(f"Deleted file: {image_path}")
+            except Exception as e:
+                print(f"Error deleting file {image_path}: {str(e)}")
+        else:
+            print(f"File not found: {image_path}")
+
+    # Delete image records from DB
     db.query(TourImage).filter(TourImage.tour_id == tour.id).delete()
 
+    # Delete the tour itself
     db.delete(tour)
     db.commit()
 
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_302_FOUND)
-
 ## edit tour
 
 @router.get('/admin/tours/edit/{tour_id}', response_class=HTMLResponse)
@@ -277,7 +321,7 @@ async def forgot_password(request: Request, email: str = Form(...), db: Session 
         subject = "Forgot Password"
         body = f"Password reset Request, Click here to reset your password: {reset_link}"
         try:
-            await send_email(user.email, subject, body) 
+            send_email(user.email, subject, body) 
         except Exception as e: 
             return templates.TemplateResponse("forgot_password.html", {"request": request, "error": f"Failed to send email: {str(e)}"})
 
@@ -286,53 +330,141 @@ async def forgot_password(request: Request, email: str = Form(...), db: Session 
     except Exception as e:
         return templates.TemplateResponse("forgot_password.html", {"request": request, "error": "An unexpected error occurred."})
 ## resetting password logic
-# Remove the separate GET handler and consolidate into one endpoint
+# # Remove the separate GET handler and consolidate into one endpoint
+# @router.get("/reset-password", response_class=HTMLResponse)
+# @router.post("/reset-password", response_class=HTMLResponse)
+# async def reset_password(
+#     request: Request,
+#     token: str = Form(None),
+#     new_password: str = Form(None),
+#     confirm_password: str = Form(None),
+#     db: Session = Depends(get_db)
+# ):
+#     # Handle GET request
+#     if request.method == "GET":
+#         token = request.query_params.get("token")
+#         if not token:
+#             return templates.TemplateResponse("reset_password.html", {
+#                 "request": request,
+#                 "error": "Missing reset token"
+#             })
+        
+#         if token not in temporary_reset_tokens:
+#             return templates.TemplateResponse("reset_password.html", {
+#                 "request": request,
+#                 "error": "Invalid or expired token"
+#             })
+        
+#         # Check expiration for GET requests too
+#         token_info = temporary_reset_tokens.get(token)
+#         if token_info and datetime.utcnow() > token_info["expires"]:
+#             del temporary_reset_tokens[token]
+#             return templates.TemplateResponse("reset_password.html", {
+#                 "request": request,
+#                 "error": "Token has expired"
+#             })
+        
+#         return templates.TemplateResponse("reset_password.html", {
+#             "request": request,
+#             "token": token
+#         })
+
+#     # Handle POST request
+#     error = None
+#     try:
+#         # Server-side validation
+#         if not token:
+#             error = "Missing reset token"
+#             raise ValueError
+        
+#         if not new_password or not confirm_password:
+#             error = "Please fill in all fields"
+#             raise ValueError
+        
+#         if new_password != confirm_password:
+#             error = "Passwords do not match"
+#             raise ValueError
+        
+#         if len(new_password) < 8:
+#             error = "Password must be at least 8 characters"
+#             raise ValueError
+
+#         # Token validation
+#         if token not in temporary_reset_tokens:
+#             error = "Invalid or expired token"
+#             raise ValueError
+
+#         token_info = temporary_reset_tokens[token]
+#         if datetime.utcnow() > token_info["expires"]:
+#             del temporary_reset_tokens[token]
+#             error = "Token has expired"
+#             raise ValueError
+
+#         # Update user password
+#         email = token_info["email"]
+#         user = db.query(User).filter(User.email == email).first()
+        
+#         if not user:
+#             error = "User not found"
+#             raise ValueError
+
+#         # Hash password and update
+#         hashed_password = hash_password(new_password)
+#         user.hashed_password = hashed_password
+#         db.commit()
+#         db.refresh(user)
+#         print("upt password:",user.password)
+
+#         # Cleanup
+#         del temporary_reset_tokens[token]
+
+#         return RedirectResponse(url="/login", status_code=303)
+
+#     except Exception as e:
+#         db.rollback()
+#         return templates.TemplateResponse("reset_password.html", {
+#             "request": request,
+#             "error": error or "An error occurred",
+#             "token": token
+#         })
+        
+        
 @router.get("/reset-password", response_class=HTMLResponse)
-@router.post("/reset-password", response_class=HTMLResponse)
-async def reset_password(
-    request: Request,
-    token: str = Form(None),
-    new_password: str = Form(None),
-    confirm_password: str = Form(None),
-    db: Session = Depends(get_db)
-):
-    # Handle GET request
-    if request.method == "GET":
-        token = request.query_params.get("token")
-        if not token:
-            return templates.TemplateResponse("reset_password.html", {
-                "request": request,
-                "error": "Missing reset token"
-            })
-        
-        if token not in temporary_reset_tokens:
-            return templates.TemplateResponse("reset_password.html", {
-                "request": request,
-                "error": "Invalid or expired token"
-            })
-        
-        # Check expiration for GET requests too
-        token_info = temporary_reset_tokens.get(token)
-        if token_info and datetime.utcnow() > token_info["expires"]:
-            del temporary_reset_tokens[token]
-            return templates.TemplateResponse("reset_password.html", {
-                "request": request,
-                "error": "Token has expired"
-            })
-        
+async def show_reset_password_form(request: Request, token: str = ""):
+    if not token:
         return templates.TemplateResponse("reset_password.html", {
             "request": request,
-            "token": token
+            "error": "Missing reset token"
         })
 
-    # Handle POST request
+    if token not in temporary_reset_tokens:
+        return templates.TemplateResponse("reset_password.html", {
+            "request": request,
+            "error": "Invalid or expired token"
+        })
+
+    token_info = temporary_reset_tokens[token]
+    if datetime.utcnow() > token_info["expires"]:
+        del temporary_reset_tokens[token]
+        return templates.TemplateResponse("reset_password.html", {
+            "request": request,
+            "error": "Token has expired"
+        })
+
+    return templates.TemplateResponse("reset_password.html", {
+        "request": request,
+        "token": token
+    })
+@router.post("/reset-password", response_class=HTMLResponse)
+async def reset_password_post(
+    request: Request,
+    token: str = Form(...),
+    new_password: str = Form(...),
+    confirm_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
     error = None
     try:
-        # Server-side validation
-        if not token:
-            error = "Missing reset token"
-            raise ValueError
-        
         if not new_password or not confirm_password:
             error = "Please fill in all fields"
             raise ValueError
@@ -345,7 +477,6 @@ async def reset_password(
             error = "Password must be at least 8 characters"
             raise ValueError
 
-        # Token validation
         if token not in temporary_reset_tokens:
             error = "Invalid or expired token"
             raise ValueError
@@ -356,7 +487,6 @@ async def reset_password(
             error = "Token has expired"
             raise ValueError
 
-        # Update user password
         email = token_info["email"]
         user = db.query(User).filter(User.email == email).first()
         
@@ -364,14 +494,11 @@ async def reset_password(
             error = "User not found"
             raise ValueError
 
-        # Hash password and update
         hashed_password = hash_password(new_password)
         user.hashed_password = hashed_password
         db.commit()
         db.refresh(user)
-        print("upt password:",user.password)
 
-        # Cleanup
         del temporary_reset_tokens[token]
 
         return RedirectResponse(url="/login", status_code=303)
@@ -694,3 +821,144 @@ async def payment_page(
     except Exception as e:
         print(f"Payment error: {str(e)}")
         return RedirectResponse(url="/tours", status_code=303)
+    
+# # Creating a newsletter to send new tours to users    
+# @router.post("/subscribe_newsletter",response_class=HTMLResponse)
+# async def subscribe_newsletter(
+#     request: Request,
+#     db: Session = Depends(get_db),
+#     user: User = Depends(get_current_user)):
+#     if not user:
+#         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+#     # Toggle newsletter subscription
+#     user.newsletter_subscribed = not user.newsletter_subscribed
+#     db.commit()
+#     message = "Subscribed to newsletter" if user.newsletter_subscribed else "Unsubscribed from newsletter"
+#     return templates.TemplateResponse("newsletter.html", {
+#         "request": request,
+#         "message": message,
+#         "is_subscribed": user.newsletter_subscribed
+#     })
+    
+# @router.get("/unsubscribe_newsletter", response_class=HTMLResponse)
+# async def unsubscribe_newsletter(
+#     request: Request,
+#     db: Session = Depends(get_db),
+#     token: str =Query(..., description="Unsubscribe token")
+    
+# ):
+#     user=db.query(User).filter(User.unsubscribe_token == token).first()
+#     if not user:
+#         return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    
+#     # Unsubscribe user from newsletter
+#     user.newsletter_subscribed = False
+#     user.unsubscribe_token = str(uuid.uuid4())
+#     db.commit()
+    
+#     return templates.TemplateResponse("unsubscribe_newsletter.html", {"request":request}
+#     )
+   
+# # routes.py
+# @router.get("/user/unsubscribe_newsletter", response_class=HTMLResponse)
+# async def user_unsubscribe_newsletter(
+#     request: Request,
+#     db: Session = Depends(get_db),
+#     user: User = Depends(get_current_user)
+# ):
+#     user.newsletter_subscribed = False
+#     user.unsubscribe_token = str(uuid.uuid4())  # Invalidate old token
+#     db.commit()
+    
+#     return templates.TemplateResponse("unsubscribe_newsletter.html", {
+#         "request": request,
+#         "email": user.email
+#     })    
+    
+    
+# Update the subscription routes
+@router.get("/subscribe_newsletter", response_class=HTMLResponse)
+@router.post("/subscribe_newsletter", response_class=HTMLResponse)
+async def subscribe_newsletter(
+    request: Request,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    # Handle GET requests (show form)
+    if request.method == "GET":
+        return templates.TemplateResponse("newsletter.html", {
+            "request": request,
+            "is_subscribed": user.newsletter_subscribed if user else False
+        })
+    
+    # POST handling
+    if not user:
+        return RedirectResponse(url="/login", status_code=303)
+    
+    if user.newsletter_subscribed:
+        return RedirectResponse(url="/newsletter_status", status_code=303)
+    
+    user.newsletter_subscribed = True
+    db.commit()
+    
+    return templates.TemplateResponse("newsletter.html", {
+        "request": request,
+        "message": "Successfully subscribed to our newsletter!",
+        "is_subscribed": True
+    })
+
+@router.get("/unsubscribe_newsletter", response_class=HTMLResponse)
+async def unsubscribe_newsletter(
+    request: Request,
+    token: str = Query(..., description="Unsubscribe token"),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.unsubscribe_token == token).first()
+    if not user:
+        return templates.TemplateResponse("error.html", {
+            "request": request,
+            "error": "Invalid unsubscribe link"
+        })
+    
+    user.newsletter_subscribed = False
+    user.unsubscribe_token = str(uuid.uuid4())
+    db.commit()
+    
+    return templates.TemplateResponse("newsletter.html", {
+        "request": request,
+        "message": "You've been unsubscribed from our newsletter",
+        "is_subscribed": False,
+        "email": user.email
+    })
+
+@router.post("/user/unsubscribe_newsletter", response_class=HTMLResponse)
+async def user_unsubscribe_newsletter(
+    request: Request,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    user.newsletter_subscribed = False
+    user.unsubscribe_token = str(uuid.uuid4())
+    db.commit()
+    
+    return templates.TemplateResponse("newsletter.html", {
+        "request": request,
+        "message": "You've been unsubscribed from our newsletter",
+        "is_subscribed": False,
+        "email": user.email
+    })
+
+@router.get("/newsletter_status", response_class=HTMLResponse)
+async def newsletter_status(
+    request: Request,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    return templates.TemplateResponse("newsletter.html", {
+        "request": request,
+        "is_subscribed": user.newsletter_subscribed,
+        "message": f"You are {'subscribed' if user.newsletter_subscribed else 'not subscribed'} to our newsletter"
+    })        
+    
+    
+        

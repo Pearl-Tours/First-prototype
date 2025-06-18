@@ -27,6 +27,27 @@
             padding: 12px;
             border-radius: 4px;
             cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        .booking-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .price-breakdown {
+            border-top: 1px dashed #dee2e6;
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .premium-badge {
+            background-color: #0d6efd;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -42,25 +63,52 @@
             <div class="card-header bg-success text-white">
                 <h4 class="mb-0">Complete Your Booking</h4>
             </div>
-            <div class="card-body text-center">
-                <h5 class="card-title">{{ tour_title }}</h5>
-                <div class="alert alert-primary">
-                    <h4 class="mb-0">Total Amount: ${{ total_price }}</h4>
-                </div>
-
-                <div class="payment-methods">
-                    <!-- Stripe Button -->
-                    <button id="stripe-button" class="stripe-btn">
-                        Pay with Credit/Debit Card
-                    </button>
+            <div class="card-body">
+                <!-- Booking Summary Section -->
+                <div class="booking-details">
+                    <h5 class="card-title">{{ tour_title }}</h5>
                     
-                    <!-- PayPal Button -->
-                    <div id="paypal-button-container"></div>
+                    {% if is_private %}
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="premium-badge me-2">PRIVATE TOUR</span>
+                        <small class="text-muted">+35% premium applied</small>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="price-breakdown">
+                        <div class="d-flex justify-content-between">
+                            <span>Base Price:</span>
+                            <span>${{ "%.2f"|format(base_price) }} per person</span>
+                        </div>
+                        {% if is_private %}
+                        <div class="d-flex justify-content-between">
+                            <span>Private Tour Premium:</span>
+                            <span>+35%</span>
+                        </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between mt-2 fw-bold">
+                            <span>Total Amount:</span>
+                            <span>${{ "%.2f"|format(total_price) }}</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="text-muted small mt-4">
-                    <p>Secure payments processed by our partners</p>
-                    <p>Need help? Contact support@ugandatours.com</p>
+                <!-- Payment Methods -->
+                <div class="text-center">
+                    <div class="payment-methods">
+                        <!-- Stripe Button -->
+                        <button id="stripe-button" class="stripe-btn">
+                            Pay with Credit/Debit Card
+                        </button>
+                        
+                        <!-- PayPal Button -->
+                        <div id="paypal-button-container"></div>
+                    </div>
+
+                    <div class="text-muted small mt-4">
+                        <p>Secure payments processed by our partners</p>
+                        <p>Need help? Contact support@ugandatours.com</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,7 +156,7 @@
                             value: '{{ total_price }}',
                             currency_code: 'USD'
                         },
-                        description: '{{ tour_title }} Tour Booking'
+                        description: '{{ tour_title }} Tour Booking - {% if is_private %}Private{% else %}Normal{% endif %} Tour'
                     }]
                 });
             },
@@ -121,7 +169,8 @@
                         },
                         body: JSON.stringify({
                             paymentID: details.id,
-                            status: details.status
+                            status: details.status,
+                            is_private: {% if is_private %}true{% else %}false{% endif %}
                         })
                     }).then(response => {
                         if (response.ok) {
