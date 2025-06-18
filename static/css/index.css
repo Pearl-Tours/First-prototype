@@ -1,12 +1,16 @@
+/* ================================
+   Root Variables
+================================= */
 :root {
   --primary-blue: #003366;
   --hover-blue: #0b3b6b;
   --btn-light-bg-hover: #e6f0ff;
   --nav-link-color: #ffffff;
-  --nav-link-hover: ;
 }
 
-/* Responsive Offcanvas Width */
+/* ================================
+   Responsive Offcanvas Width
+================================= */
 @media (min-width: 576px) {
   .offcanvas {
     width: 50% !important;
@@ -19,71 +23,33 @@
   }
 }
 
-/* Navbar Background */
+/* ================================
+   Navbar Styles
+================================= */
 .navbar-custom-blue {
   background-color: var(--primary-blue) !important;
 }
 
-/* Correct nav-link base styling */
 .navbar-nav .nav-link,
-.offcanvas .nav-link,
-.nav-link {
+.nav-link,
+.offcanvas .nav-link {
   color: var(--nav-link-color) !important;
   transition: all 0.5s ease;
   padding: 0.5rem 1rem;
 }
-.btn-light {
-  transition: all 0.5s ease;
-  padding: 0.5rem 1rem;
-}
 
-/* Hover effect */
-.btn-light:hover,
+.nav-link:hover,
 .navbar-nav .nav-link:hover,
-.offcanvas .nav-link:hover,
-.nav-link:hover {
+.offcanvas .nav-link:hover {
   color: var(--nav-link-hover) !important;
   transform: translateY(-3px);
   opacity: 0.8;
-}
-
-/* Offcanvas Animation */
-.offcanvas {
-  transition: transform 0.4s ease-in-out;
-}
-
-.nav-link {
-  color: white;
-}
-
-/* Button Styling */
-.btn {
-  border-radius: 0.5rem;
-  font-weight: 500;
-}
-
-/* Signup Button Hover */
-.btn-light.text-primary:hover {
-  background-color: var(--btn-light-bg-hover);
-  color: var(--hover-blue);
-}
-
-/* Login Button Hover */
-.btn-outline-light:hover {
-  background-color: white;
-  color: var(--hover-blue);
-}
-
-/* Optional: Improve visibility for offcanvas nav links */
-.offcanvas .nav-link {
-  color: var(--nav-link-color);
 }
 
 .offcanvas .nav-link:hover {
   color: var(--nav-link-hover);
 }
 
-/* Optional: Make offcanvas title look nicer */
 .offcanvas-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -91,44 +57,268 @@
   width: 100%;
 }
 
-/* video */
+/* ================================
+   Button Styles
+================================= */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.btn-light {
+  transition: all 0.5s ease;
+  padding: 0.5rem 1rem;
+}
+
+.btn-light:hover {
+  background-color: var(--btn-light-bg-hover);
+  color: var(--hover-blue);
+}
+
+.btn-light.text-primary:hover {
+  background-color: var(--btn-light-bg-hover);
+  color: var(--hover-blue);
+}
+
+.btn-outline-light:hover {
+  background-color: white;
+  color: var(--hover-blue);
+}
+
+/* ================================
+   Offcanvas Animation
+================================= */
+.offcanvas {
+  transition: transform 0.4s ease-in-out;
+}
+
+/* ================================
+   Hero Section
+================================= */
 .video-hero {
+  position: relative;
   height: 100vh;
   background-color: black;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
 }
 
 .video-container video {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
 .video-overlay {
+  position: relative;
   z-index: 2;
+  width: 100%;
+  text-align: center;
   padding: 2rem;
   background: rgba(0, 0, 0, 0.4);
-  /* optional dark overlay */
   backdrop-filter: blur(0.5px);
-  /* nice blur effect */
+  color: white;
 }
 
-.video-container {
-  z-index: 1;
+.video-overlay h1,
+.video-overlay h2,
+.video-overlay p {
+  margin-bottom: 1rem;
 }
 
-/* About Us Section */
-.container.mt-5.mb-5 { /* Targeting the specific 'About Us' container more precisely */
+.video-overlay h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.video-overlay p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .video-overlay h1 {
+    font-size: 3.5rem;
+  }
+
+  .video-overlay p {
+    font-size: 1.4rem;
+  }
+}
+
+/* ================================
+   About Us Section
+================================= */
+.container.mt-5.mb-5 {
   padding-top: 2rem;
   padding-bottom: 2rem;
 }
 
 .container.mt-5.mb-5 h2 {
-  font-size: 2.5rem; /* Larger heading */
+  font-size: 2.5rem;
   font-weight: bold;
   margin-bottom: 1rem;
-  color: #333; /* Darker color for better readability */
+  color: #333;
 }
 
 .container.mt-5.mb-5 p.lead {
-  font-size: 1.1rem; /* Slightly larger paragraph text */
+  font-size: 1.1rem;
   line-height: 1.6;
-  color: #555; /* Slightly lighter than heading but still dark */
+  color: #555;
+}
+
+/* ================================
+   Utilities
+================================= */
+.section-narrow {
+  padding: 60px 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--primary-blue);
+}
+
+/* ================================
+   Cards / Hover Effects
+================================= */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   Testimonials
+================================= */
+.testimonial {
+  background: #ffffff;
+  border-left: 5px solid #ffc107;
+  padding: 20px;
+  border-radius: 8px;
+  font-style: italic;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.testimonial-card {
+  border-left: 4px solid var(--primary-blue);
+}
+
+/* ================================
+   Process Steps
+================================= */
+.process-step {
+  text-align: center;
+  padding: 20px;
+}
+
+.process-icon {
+  font-size: 2.5rem;
+  color: #0d6efd;
+  margin-bottom: 15px;
+}
+
+.process-number {
+  width: 50px;
+  height: 50px;
+  background: var(--primary-blue);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-weight: bold;
+}
+
+/* ================================
+   Stats Section
+================================= */
+.stat {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* ================================
+   Team Section
+================================= */
+.team-member {
+  text-align: center;
+}
+
+.team-member img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 15px;
+}
+
+.profile-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.team-member h5 {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.team-member span {
+  display: block;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* ================================
+   Icons & Misc
+================================= */
+.benefit-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-blue);
 }
