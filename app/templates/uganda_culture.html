@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uganda's Cultural Regions</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/culture.css">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom-blue sticky-top">
+    <div class="container">
+      <a class="navbar-brand text-white" href="#"><i class="bi bi-gem me-2 "></i> Pearl Tours</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/"><i class="bi bi-house-door"></i> Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#map-section"><i class="bi bi-map"></i> Map</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#regions"><i class="bi bi-geo-alt"></i> Regions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#festivals"><i class="bi bi-calendar-event"></i> Festivals</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#stories"><i class="bi bi-book"></i> Stories</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="#locals"><i class="bi bi-people"></i> Locals</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-primary text-white text-center py-5">
+    <div class="container">
+      <h1 class="display-4">Uganda's Cultural Regions</h1>
+      <p class="lead">Discover the rich tapestry of traditions, food, and dress from every corner of Uganda</p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container my-5">
+    <!-- Filter Section -->
+    <section class="filter-container mb-5 text-center">
+      <div class="row g-3 justify-content-center">
+        <div class="col-md-3">
+          <label for="regionFilter" class="form-label"><i class="bi bi-geo-alt"></i> Region:</label>
+          <select id="regionFilter" class="form-select" onchange="filterRegions()">
+            <option value="all">All Regions</option>
+            <option value="central">Central</option>
+            <option value="eastern">Eastern</option>
+            <option value="western">Western</option>
+            <option value="northern">Northern</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="interestFilter" class="form-label"><i class="bi bi-star"></i> Interest:</label>
+          <select id="interestFilter" class="form-select" onchange="filterRegions()">
+            <option value="all">All Interests</option>
+            <option value="food">Food</option>
+            <option value="dance">Dance</option>
+            <option value="clothing">Clothing</option>
+            <option value="festival">Festival</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="keywordSearch" class="form-label"><i class="bi bi-search"></i> Search:</label>
+          <input type="text" id="keywordSearch" class="form-control" placeholder="Search by keyword..."
+            onkeyup="filterRegions()">
+        </div>
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section id="map-section" class="mb-5">
+      <h2 class="section-title">Explore by Map</h2>
+      <div id="map" class="rounded shadow"></div>
+    </section>
+
+    <!-- Regions Section -->
+    <!-- Regions Section -->
+    <section id="regions" class="mb-5">
+      <h2 class="section-title text-center mb-4">Cultural Regions of Uganda</h2>
+
+      <!-- CENTRAL REGION -->
+      <div class="region card shadow mb-5 border-0 rounded-4 overflow-hidden" id="central">
+        <div class="row g-0">
+          <div class="col-md-5">
+            <div class="slider position-relative">
+              <div class="slider-container">
+                <img src="static/img/central dance.jpg" alt="Central Uganda cultural image" class="img-fluid"
+                  width="800" height="450" loading="lazy">
+                <img src="static/img/central.jpg" alt="Central Uganda dance" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+                <img src="static/img/lake victoria.jpg" alt="Lake Victoria" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+                <img src="static/img/backcloth.JPG" alt="Backcloth by Baganda tribes" class="img-fluid" width="800"
+                  height="450" loading="lazy">
+                <img src="static/img/food 2.JPG" alt="Food in Central" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+              </div>
+              <div class="slider-nav">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="card-body p-4">
+              <h3 class="card-title">Central Region</h3>
+              <p><strong>Food:</strong> Luwombo, Matooke, Groundnut sauce</p>
+              <p><strong>Dress:</strong> Gomesi for women, Kanzu for men</p>
+              <p><strong>Tradition:</strong> Buganda kingdom ceremonies</p>
+              <div class="video-preview mt-3">
+                <iframe class="region-video"
+                  src="https://www.youtube.com/embed/6gePosuiMsM?autoplay=1&mute=1&loop=1&playlist=6gePosuiMsM&rel=0&modestbranding=1&controls=1"
+                  allowfullscreen></iframe>
+                <div class="video-credit text-end">
+                  <small class="text-muted">Video by <a href="https://youtu.be/6gePosuiMsM"
+                      target="_blank">@ExploreUganda</a></small>
+                </div>
+              </div>
+              <blockquote class="blockquote mt-3">
+                <i class="bi bi-quote text-primary"></i> The Buganda kingdom has a rich cultural heritage that dates
+                back centuries.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EASTERN REGION -->
+      <div class="region card shadow mb-5 border-0 rounded-4 overflow-hidden" id="eastern">
+        <div class="row g-0">
+          <div class="col-md-5">
+            <div class="slider">
+              <div class="slider-container">
+                <img src="static/img/imbalu dance.jpg" alt="Imbalu ceremony" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+                <img src="static/img/rafting on rivernile.jpg" alt="Rafting on River Nile" class="img-fluid" width="800"
+                  height="450" loading="lazy">
+                <img src="static/img/food 1.JPG" alt="Food in Eastern region" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+              </div>
+              <div class="slider-nav">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="card-body p-4">
+              <h3 class="card-title">Eastern Region</h3>
+              <p><strong>Food:</strong> Malewa, Kwon kal, Simsim paste</p>
+              <p><strong>Dress:</strong> Suuti for women, Kanzu for men</p>
+              <p><strong>Tradition:</strong> Imbalu circumcision ceremony</p>
+              <div class="video-preview mt-3">
+                <iframe class="region-video"
+                  src="https://www.youtube.com/embed/aRtNR4vAYDE?start=14&autoplay=1&mute=1&loop=1&playlist=aRtNR4vAYDE&rel=0&modestbranding=1&controls=1"
+                  allowfullscreen></iframe>
+                <div class="video-credit text-end">
+                  <small class="text-muted">Video by <a href="https://youtu.be/aRtNR4vAYDE?t=14"
+                      target="_blank">@ExploreUganda</a></small>
+                </div>
+              </div>
+              <blockquote class="blockquote mt-3">
+                <i class="bi bi-quote text-primary"></i> Our Imbalu ceremony is a rite of passage that connects
+                generations.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WESTERN REGION -->
+      <div class="region card shadow mb-5 border-0 rounded-4 overflow-hidden" id="western">
+        <div class="row g-0">
+          <div class="col-md-5">
+            <div class="slider">
+              <div class="slider-container">
+                <img src="static/img/longhorned cattle.jpg" alt="Ankole longhorn cattle" class="img-fluid" width="800"
+                  height="450" loading="lazy">
+                <img src="static/img/southernug.jpg" alt="Hills of Kabale" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+                <img src="static/img/line zipping.jpg" alt="Ziplining in Western region" class="img-fluid" width="800"
+                  height="450" loading="lazy">
+              </div>
+              <div class="slider-nav">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="card-body p-4">
+              <h3 class="card-title">Western Region</h3>
+              <p><strong>Food:</strong> Eshabwe, Akaro, Obushera</p>
+              <p><strong>Dress:</strong> Mushanana for women, Kanzu for men</p>
+              <p><strong>Tradition:</strong> Cattle keeping ceremonies</p>
+              <div class="video-preview mt-3">
+                <iframe class="region-video"
+                  src="https://www.youtube.com/embed/EBO0yL3zgX0?start=1&autoplay=1&mute=1&loop=1&playlist=EBO0yL3zgX0&rel=0&modestbranding=1&controls=1"
+                  allowfullscreen></iframe>
+                <div class="video-credit text-end">
+                  <small class="text-muted">Video by <a href="https://youtu.be/EBO0yL3zgX0?t=1"
+                      target="_blank">@ExploreUganda</a></small>
+                </div>
+              </div>
+              <blockquote class="blockquote mt-3">
+                <i class="bi bi-quote text-primary"></i> The Western region blends scenic beauty with deep-rooted
+                traditions.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NORTHERN REGION -->
+      <div class="region card shadow mb-5 border-0 rounded-4 overflow-hidden" id="northern">
+        <div class="row g-0">
+          <div class="col-md-5">
+            <div class="slider">
+              <div class="slider-container">
+                <img src="static/img/northenugandadress.JPG" alt="Northern Uganda cultural dress" class="img-fluid"
+                  width="800" height="450" loading="lazy">
+                <img src="static/img/food 4.JPG" alt="Food in Northern region" class="img-fluid" width="800"
+                  height="450" loading="lazy">
+                <img src="static/img/food 3.JPG" alt="Millet food" class="img-fluid" width="800" height="450"
+                  loading="lazy">
+              </div>
+              <div class="slider-nav">
+                <span class="slider-dot active"></span>
+                <span class="slider-dot"></span>
+                <span class="slider-dot"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <div class="card-body p-4">
+              <h3 class="card-title">Northern Region</h3>
+              <p><strong>Food:</strong> Simsim paste, Millet, Dried fish</p>
+              <p><strong>Dress:</strong> Colorful wraps, Beaded jewelry</p>
+              <p><strong>Tradition:</strong> Acholi warrior dances and storytelling</p>
+              <div class="video-preview mt-3">
+                <iframe class="region-video"
+                  src="https://www.youtube.com/embed/XolOUfLHf3A?start=3&autoplay=1&mute=1&loop=1&playlist=XolOUfLHf3A&rel=0&modestbranding=1&controls=1"
+                  allowfullscreen></iframe>
+                <div class="video-credit text-end">
+                  <small class="text-muted">Video by <a href="https://youtu.be/XolOUfLHf3A?t=3"
+                      target="_blank">@ExploreUganda</a></small>
+                </div>
+              </div>
+              <blockquote class="blockquote mt-3">
+                <i class="bi bi-quote text-primary"></i> Northern Uganda is home to powerful stories, rhythms, and
+                community spirit.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Festivals Section -->
+    <section id="festivals" class="mb-5">
+      <h2 class="section-title">Festival Calendar</h2>
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="calendar-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">Imbalu Ceremony</h4>
+              <p class="card-text"><i class="bi bi-calendar"></i> August | <i class="bi bi-geo-alt"></i> Eastern Uganda
+              </p>
+              <p class="card-text">The traditional circumcision ceremony of the Bagisu people, marked by dancing,
+                singing, and celebrations.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="calendar-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">Buganda Royal Regatta</h4>
+              <p class="card-text"><i class="bi bi-calendar"></i> May | <i class="bi bi-geo-alt"></i> Southern Uganda
+              </p>
+              <p class="card-text">A spectacular boat racing festival on Lake Victoria celebrating Buganda's maritime
+                traditions.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="calendar-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">Acholi Dance Week</h4>
+              <p class="card-text"><i class="bi bi-calendar"></i> November | <i class="bi bi-geo-alt"></i> Northern
+                Uganda</p>
+              <p class="card-text">A vibrant celebration of Acholi traditional dances, music, and storytelling.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stories Section -->
+    <section id="stories" class="mb-5">
+      <h2 class="section-title">Traditional Stories</h2>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="story-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">The Tale of the Wise Bamboo</h4>
+              <p class="card-text"><strong>Eastern Uganda</strong> - A story about how bamboo came to be the strongest
+                plant in the forest.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="story-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">Ankole Cow That Could Speak</h4>
+              <p class="card-text"><strong>Western Uganda</strong> - The legend of a magical cow that saved a village
+                from drought.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="story-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">The Warrior and the Rain Spirit</h4>
+              <p class="card-text"><strong>Northern Uganda</strong> - How a brave warrior made peace with the spirits to
+                bring rain.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="story-item card h-100">
+            <div class="card-body">
+              <h4 class="card-title">How the Buganda Got Their Drums</h4>
+              <p class="card-text"><strong>Southern Uganda</strong> - The origin story of the royal drums of Buganda
+                kingdom.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Locals Section -->
+    <section id="locals" class="mb-5">
+      <h2 class="section-title">Meet the Locals</h2>
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="local-profile-item card h-100">
+            <div class="card-body">
+              <div class="d-flex">
+                <i class="bi bi-person-circle fs-1 me-3 text-primary"></i>
+                <div>
+                  <h5 class="card-title">Mama Florence, Mbale (Eastern)</h5>
+                  <p class="card-text">"I love when tourists try our millet wine and participate in our traditional
+                    dances!"</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="local-profile-item card h-100">
+            <div class="card-body">
+              <div class="d-flex">
+                <i class="bi bi-person-circle fs-1 me-3 text-primary"></i>
+                <div>
+                  <h5 class="card-title">John Bosco, Mbarara (Western)</h5>
+                  <p class="card-text">"We take great pride in our long-horned cattle. They're not just animals, they're
+                    family."</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Back to Top Button -->
+  <a href="#" class="back-to-top btn btn-primary rounded-circle" id="backToTop"><i class="bi bi-arrow-up"></i></a>
+
+  <!-- Footer -->
+  <footer class="navbar-custom-blue text-white py-4">
+    <div class="container text-center">
+      <p class="mb-0">&copy; 2025 PEARL TOURS</p>
+      <div class="social-links mt-3">
+        <a href="#" class="text-white mx-2"><i class="bi bi-facebook"></i></a>
+        <a href="#" class="text-white mx-2"><i class="bi bi-twitter"></i></a>
+        <a href="#" class="text-white mx-2"><i class="bi bi-instagram"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Custom JS -->
+  <script src="/static/js/culture.js"></script>
+</body>
+
+</html>

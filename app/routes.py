@@ -25,7 +25,8 @@ from fastapi import BackgroundTasks,Query
 #from app.database import Sessionlocal as DBSession
 
 # Uses the base URL from environment variable or defaults to localhost
-BASE_URL = os.getenv("BASE_URL")
+BASE_URL = os.getenv("BASE_URL","https://super-duper-memory-v66vwrv6x5g53479-8000.app.github.dev")
+# BASE_URL = os.getenv("BASE_URL","http://localhost:8000")
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -35,9 +36,86 @@ UPLOAD_DIR = "app/static/uploads/tours"
  
 
 templates = Jinja2Templates(directory="app/templates")# template setup
+regions = [
+    {
+        "id": "central",
+        "name": "Central Region",
+        "food": ["Luwombo", "Matooke", "Groundnut sauce"],
+        "dress": "Gomesi for women, Kanzu for men",
+        "tradition": "Buganda kingdom ceremonies",
+        "images": [
+            "central dance.jpg", "central.jpg", "lake victoria.jpg",
+            "backcloth.JPG", "food 2.JPG"
+        ],
+        "video": "XYZ123",
+        "credit": "@UgandaTourismBoard",
+        "testimonial": "The Buganda kingdom has a rich cultural heritage that dates back centuries."
+    },
+    {
+        "id": "eastern",
+        "name": "Eastern Uganda",
+        "food": ["Malewa", "Kwon kal", "Simsim paste"],
+        "dress": "Suuti for women, Kanzu for men",
+        "tradition": "Imbalu circumcision ceremony",
+        "images": [
+            "https://via.placeholder.com/300x180?text=Eastern+Uganda",
+            "https://via.placeholder.com/300x180?text=Imbalu+Ceremony"
+        ],
+        "video": "dQw4w9WgXcQ",
+        "credit": "@ExploreUganda",
+        "testimonial": "Our Imbalu ceremony is a rite of passage that connects generations."
+    },
+    {
+        "id": "western",
+        "name": "Western Uganda",
+        "food": ["Eshabwe", "Akaro", "Obushera"],
+        "dress": "Mushanana for women, Kanzu for men",
+        "tradition": "Cattle keeping ceremonies",
+        "images": [
+            "https://via.placeholder.com/300x180?text=Western+Uganda",
+            "https://via.placeholder.com/300x180?text=Ankole+Cattle"
+        ],
+        "video": "DEF789",
+        "credit": "@UgandaCulturalHeritage",
+        "testimonial": "Our long-horned Ankole cattle are a symbol of pride and wealth."
+    },
+    {
+        "id": "northern",
+        "name": "Northern Uganda",
+        "food": ["Simsim paste", "Millet", "Dried fish"],
+        "dress": "Colorful wraps, Beaded jewelry",
+        "tradition": "Acholi warrior dances and storytelling",
+        "images": [
+            "northenugandadress.JPG", "food 4.JPG", "food 3.JPG"
+        ],
+        "video": "WCwBlzeOY6U",
+        "credit": "@ExploreUganda",
+        "testimonial": "Northern Uganda is home to powerful stories, rhythms, and community spirit."
+    },
+    {
+        "id": "southern",
+        "name": "Southern Uganda",
+        "food": ["Matooke", "Groundnut sauce", "Smoked fish"],
+        "dress": "Gomesi, Bark cloth",
+        "tradition": "Buganda royal customs and clan systems",
+        "images": [
+            "https://via.placeholder.com/300x180?text=Southern+Uganda",
+            "https://via.placeholder.com/300x180?text=Buganda+Drums",
+            "https://via.placeholder.com/300x180?text=Smoked+Fish"
+        ],
+        "video": "SOU456",
+        "credit": "@RoyalBugandaChannel",
+        "testimonial": "The Southern region brings the elegance of tradition and royalty together."
+    }
+]
+
 @router.get("/")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "title": "Uganda Tours"})
+
+@router.get("/cultures", response_class=HTMLResponse)
+async def show_cultures(request: Request):
+    return templates.TemplateResponse("uganda_culture.html", {"request": request, "regions": regions})
 
 @router.get("/tours", response_class=HTMLResponse)
 async def tours_page(
