@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <style>
+        .btn-action { min-width: 120px; }
+        .section-title {
+            border-bottom: 2px solid #2a9d8f;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+
+        /* Ticket Styling */
+        .ticket-container { width: 100%; max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .company-name { font-size: 24px; font-weight: bold; color: #2a9d8f; }
+        .ticket-title { font-size: 20px; text-align: center; margin: 15px 0; }
+        .ticket-details { border: 2px solid #2a9d8f; border-radius: 10px; padding: 20px; }
+        .detail-row { display: flex; margin-bottom: 10px; }
+        .detail-label { width: 40%; font-weight: bold; }
+        .detail-value { width: 60%; }
+        .qr-code { text-align: center; margin: 20px 0; }
+        .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+        .ticket-id { text-align: center; font-weight: bold; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Uganda Tours</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/tours">Tours</a></li>
+                    {% if user and user.is_admin %}
+                    <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Admin Dashboard</a></li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user %}
+                    <li class="nav-item"><a class="nav-link active" href="/my-bookings">My Bookings</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/signup">Signup</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <h1 class="section-title">My Bookings</h1>
+
+        {% if bookings %}
+        <div class="row">
+            {% for booking in bookings %}
+            <div class="col-lg-6 mb-4">
+                <div class="border p-3 rounded shadow-sm">
+                    <h5>{{ booking.tour.title }}</h5>
+                    <p><strong>Date:</strong> {{ booking.tour_date.strftime('%B %d, %Y') }}</p>
+                    <p><strong>Status:</strong> {{ booking.payment_status|capitalize }}</p>
+
+                    <div class="action-buttons">
+                        <a href="/book/{{ booking.tour.id }}" class="btn btn-outline-primary btn-sm btn-action">
+                            <i class="bi bi-arrow-repeat me-1"></i>Book Again
+                        </a>
+                        {% if booking.payment_status == 'completed' %}
+                        <button onclick="downloadTicket({{ booking.id }})" class="btn btn-outline-success btn-sm btn-action">
+                            <i class="bi bi-download me-1"></i>Download Ticket
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Hidden Ticket -->
+                    <div id="ticket-{{ booking.id }}" style="display: none;">
+                        <div class="ticket-container">
+                            <div class="header">
+                                <div class="company-name">Uganda Tours</div>
+                                <div>Your Adventure Awaits!</div>
+                            </div>
+                            <div class="ticket-title">Tour Ticket</div>
+                            <div class="ticket-details">
+                                <div class="detail-row">
+                                    <div class="detail-label">Booking ID:</div>
+                                    <div class="detail-value">#{{ booking.id }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Tour:</div>
+                                    <div class="detail-value">{{ booking.tour.title }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Date:</div>
+                                    <div class="detail-value">{{ booking.tour_date.strftime('%B %d, %Y') }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Time:</div>
+                                    <div class="detail-value">9:00 AM (Please arrive 30 minutes early)</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Participants:</div>
+                                    <div class="detail-value">
+                                        {{ booking.adults }} adult(s), {{ booking.kids }} child(ren)
+                                    </div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Booked By:</div>
+                                    <div class="detail-value">{{ user.full_name }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Email:</div>
+                                    <div class="detail-value">{{ user.email }}</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Meeting Point:</div>
+                                    <div class="detail-value">Uganda Tours Main Office, Kampala</div>
+                                </div>
+                                <div class="qr-code">
+                                    <div style="border: 1px dashed #ccc; padding: 20px; display: inline-block;">
+                                        [QR CODE FOR BOOKING #{{ booking.id }}]
+                                    </div>
+                                </div>
+                                <div class="ticket-id">Ticket ID: {{ booking.id }}-{{ user.id }}</div>
+                            </div>
+                            <div class="footer">
+                                <p>Present this ticket at the tour meeting point.</p>
+                                <p>For assistance, contact: support@ugandatours.com or +256 123 456 789</p>
+                                <p>Terms & Conditions: Cancellations require 24-hour notice for refunds</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">You have no bookings yet.</div>
+        {% endif %}
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2023 Uganda Tours. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function downloadTicket(bookingId) {
+            const element = document.getElementById(`ticket-${bookingId}`);
+            const opt = {
+                margin: 0.5,
+                filename: `ticket_${bookingId}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>

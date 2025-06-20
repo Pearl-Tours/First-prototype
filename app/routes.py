@@ -1,4 +1,6 @@
 import uuid
+import pdfkit
+
 import os
 import stripe
 from fastapi.staticfiles import StaticFiles
@@ -6,7 +8,7 @@ from typing import Optional, List
 from fastapi import APIRouter,Request, Depends, HTTPException, status
 from fastapi import Form
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse,RedirectResponse
+from fastapi.responses import HTMLResponse,RedirectResponse,FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from app.models import User, Session, Tour,TourImage, Booking
@@ -21,6 +23,9 @@ from fastapi.responses import JSONResponse
 from fastapi import BackgroundTasks,Query
 
 #from app.database import Sessionlocal as DBSession
+
+# Uses the base URL from environment variable or defaults to localhost
+BASE_URL = os.getenv("BASE_URL")
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -220,24 +225,7 @@ async def update_tour(request: Request, tour_id: int, db: Session = Depends(get_
     
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_302_FOUND)
 
-#delete tour
-# @router.post('/admin/tours/delete/{tour_id}', response_class=HTMLResponse)
-# async def delete_tour(request: Request, tour_id: int, db: Session = Depends(get_db), user: Optional[User] = Depends(get_current_admin)):
-#     if not user.is_admin:
-#         raise HTTPException(status_code=403, detail="Not authorized to access this page")
-    
-#     tour = db.query(Tour).filter(Tour.id == tour_id).first()
 
-#     if not tour:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tour not found")
-    
-#     # Delete related images first
-#     db.query(TourImage).filter(TourImage.tour_id == tour.id).delete()
-
-#     db.delete(tour)
-#     db.commit()
-
-#     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_302_FOUND)
 
 @router.post('/admin/tours/delete/{tour_id}', response_class=HTMLResponse)
 async def delete_tour(
@@ -317,7 +305,8 @@ async def forgot_password(request: Request, email: str = Form(...), db: Session 
         }
 
         # Send email with the reset link
-        reset_link = f"https://super-duper-memory-v66vwrv6x5g53479-8000.app.github.dev/reset-password?token={reset_token}"
+       # reset_link = f"http://localhost:8000/reset-password?token={reset_token}"
+        reset_link = f"{BASE_URL.rstrip('/')}/reset-password?token={reset_token}"
         subject = "Forgot Password"
         body = f"Password reset Request, Click here to reset your password: {reset_link}"
         try:
@@ -329,105 +318,7 @@ async def forgot_password(request: Request, email: str = Form(...), db: Session 
     
     except Exception as e:
         return templates.TemplateResponse("forgot_password.html", {"request": request, "error": "An unexpected error occurred."})
-## resetting password logic
-# # Remove the separate GET handler and consolidate into one endpoint
-# @router.get("/reset-password", response_class=HTMLResponse)
-# @router.post("/reset-password", response_class=HTMLResponse)
-# async def reset_password(
-#     request: Request,
-#     token: str = Form(None),
-#     new_password: str = Form(None),
-#     confirm_password: str = Form(None),
-#     db: Session = Depends(get_db)
-# ):
-#     # Handle GET request
-#     if request.method == "GET":
-#         token = request.query_params.get("token")
-#         if not token:
-#             return templates.TemplateResponse("reset_password.html", {
-#                 "request": request,
-#                 "error": "Missing reset token"
-#             })
-        
-#         if token not in temporary_reset_tokens:
-#             return templates.TemplateResponse("reset_password.html", {
-#                 "request": request,
-#                 "error": "Invalid or expired token"
-#             })
-        
-#         # Check expiration for GET requests too
-#         token_info = temporary_reset_tokens.get(token)
-#         if token_info and datetime.utcnow() > token_info["expires"]:
-#             del temporary_reset_tokens[token]
-#             return templates.TemplateResponse("reset_password.html", {
-#                 "request": request,
-#                 "error": "Token has expired"
-#             })
-        
-#         return templates.TemplateResponse("reset_password.html", {
-#             "request": request,
-#             "token": token
-#         })
 
-#     # Handle POST request
-#     error = None
-#     try:
-#         # Server-side validation
-#         if not token:
-#             error = "Missing reset token"
-#             raise ValueError
-        
-#         if not new_password or not confirm_password:
-#             error = "Please fill in all fields"
-#             raise ValueError
-        
-#         if new_password != confirm_password:
-#             error = "Passwords do not match"
-#             raise ValueError
-        
-#         if len(new_password) < 8:
-#             error = "Password must be at least 8 characters"
-#             raise ValueError
-
-#         # Token validation
-#         if token not in temporary_reset_tokens:
-#             error = "Invalid or expired token"
-#             raise ValueError
-
-#         token_info = temporary_reset_tokens[token]
-#         if datetime.utcnow() > token_info["expires"]:
-#             del temporary_reset_tokens[token]
-#             error = "Token has expired"
-#             raise ValueError
-
-#         # Update user password
-#         email = token_info["email"]
-#         user = db.query(User).filter(User.email == email).first()
-        
-#         if not user:
-#             error = "User not found"
-#             raise ValueError
-
-#         # Hash password and update
-#         hashed_password = hash_password(new_password)
-#         user.hashed_password = hashed_password
-#         db.commit()
-#         db.refresh(user)
-#         print("upt password:",user.password)
-
-#         # Cleanup
-#         del temporary_reset_tokens[token]
-
-#         return RedirectResponse(url="/login", status_code=303)
-
-#     except Exception as e:
-#         db.rollback()
-#         return templates.TemplateResponse("reset_password.html", {
-#             "request": request,
-#             "error": error or "An error occurred",
-#             "token": token
-#         })
-        
         
 @router.get("/reset-password", response_class=HTMLResponse)
 async def show_reset_password_form(request: Request, token: str = ""):
@@ -597,7 +488,101 @@ async def process_booking(
             status_code=500,
             detail="An error occurred while processing your booking"
         )
+        
+## Viewing of the Booked tours        
+@router.get("/my-bookings", response_class=HTMLResponse)
+async def view_bookings(
+    request: Request,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    # Get all bookings for the current user with tour details
+    bookings = db.query(Booking).options(joinedload(Booking.tour)).filter(
+        Booking.user_id == user.id
+    ).order_by(Booking.tour_date.desc()).all()
+    current_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    
+    return templates.TemplateResponse("my_bookings.html", {
+        "request": request,
+        "user": user,
+        "bookings": bookings,
+        "current_date": current_date,
+        "title": "My Bookings"
+    })
+    
+# 
 
+# Add these new routes for a user to cancel a booking and download their ticket
+@router.post("/cancel-booking/{booking_id}", response_class=RedirectResponse)
+async def cancel_booking(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    # Fetch booking
+    booking = db.query(Booking).filter(
+        Booking.id == booking_id,
+        Booking.user_id == user.id
+    ).first()
+    
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    # Check if cancellation is allowed (at least 24 hours before tour)
+    cancellation_deadline = booking.tour_date - timedelta(hours=24)
+    if datetime.utcnow() > cancellation_deadline:
+        return templates.TemplateResponse("cancellation_error.html", {
+            "request": Request,
+            "error": "Cancellation is only allowed up to 24 hours before the tour"
+        })
+    
+    # Update booking status
+    booking.payment_status = "cancelled"
+    db.commit()
+    
+    # Send cancellation confirmation email
+    send_email(
+        user.email,
+        "Booking Cancelled",
+        f"Your booking for {booking.tour.title} on {booking.tour_date} has been cancelled.Your money will be refunded within 3-5 business days.Thank you for using our service!"
+    )
+    
+    return RedirectResponse(url="/my-bookings", status_code=303)
+## Download a tour booked receipt
+# @router.get("/download-ticket/{booking_id}")
+# async def download_ticket(
+#     booking_id: int,
+#     db: Session = Depends(get_db),
+#     user: User = Depends(get_current_user)
+# ):
+#     # Fetch booking with tour details
+#     booking = db.query(Booking).options(joinedload(Booking.tour)).filter(
+#         Booking.id == booking_id,
+#         Booking.user_id == user.id,
+#         Booking.payment_status == "completed"
+#     ).first()
+    
+#     if not booking:
+#         raise HTTPException(status_code=404, detail="Ticket not available")
+    
+#     # Generate ticket filename
+#     filename = f"ticket_{booking_id}.pdf"
+#     filepath = os.path.join("app", "static", "tickets", filename)
+    
+#     # Create directory if needed
+#     os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    
+#     # Render HTML template for ticket
+#     ticket_html = templates.get_template("ticket_template.html").render({
+#         "booking": booking,
+#         "user": user
+#     })
+    
+#     # Convert to PDF
+#     pdfkit.from_string(ticket_html, filepath)
+    
+#     # Return the PDF file
+#     return FileResponse(filepath, filename=f"{booking.tour.title.replace(' ', '_')}_ticket.pdf")    
 # @router.get("/payment", response_class=HTMLResponse)
 # async def payment_page(
 #     request: Request,
@@ -731,7 +716,8 @@ async def create_stripe_session(
                 'tour_id': tour.id,
                 'adults': booking_data['adults'],
                 'kids': booking_data['kids'],
-                'total_price': booking_data['total_price']
+                'total_price': booking_data['total_price'],
+                'tour_date': booking_data['tour_date']
             },
             success_url=str(request.url_for('payment_success')) + "?session_id={CHECKOUT_SESSION_ID}",
             cancel_url=str(request.url_for('payment_page'))
@@ -770,7 +756,7 @@ async def payment_success(
         db.commit()
 
         # Send confirmation email
-        await send_email(
+        send_email(
             user.email,
             "Booking Confirmation",
             f"""Your booking details:

@@ -12,6 +12,10 @@ from app.database import get_db
 from typing import Optional
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+ 
+#Uses the base URL from environment variable or defaults to localhost
+BASE_URL = os.getenv("BASE_URL")
+base = BASE_URL.rstrip('/')
 
 
 SESSION_EXPIRE_MINUTES = 30
@@ -132,7 +136,9 @@ def notify_subscribers(db: Session, tour_id: int):
 
 
 def send_tour_notification(to_email: str, tour: Tour, unsubscribe_token: str):
-    unsubscribe_link = f"http://localhost:8000/unsubscribe_newsletter?token={unsubscribe_token}"
+    #unsubscribe_link = f"http://localhost:8000/unsubscribe_newsletter?token={unsubscribe_token}"
+    unsubscribe_link = f"{base}/unsubscribe_newsletter?token={unsubscribe_token}"
+    tour_link = f"{base}/tours"
     subject = f"New Tour Available: {tour.title}"
     body = f"""
     <html>
@@ -145,7 +151,7 @@ def send_tour_notification(to_email: str, tour: Tour, unsubscribe_token: str):
         <p>Locations: {tour.locations}</p>
         
         <p>Visit our website to book now!</p>
-        <a href="http://localhost:8000/tours" style="
+        <a href="{tour_link}" style="
            display:inline-block;
            padding:10px 20px;
            background-color:#007BFF;

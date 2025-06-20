@@ -65,7 +65,7 @@ class Booking(Base):
     tour= relationship("Tour", backref="bookings")
     payment_method = Column(String(20))
     payment_id = Column(String(50))
-    
+    payment_status = Column(String)
     @property
     def participant_count(self):
         return self.adults + self.kids
