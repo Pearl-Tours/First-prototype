@@ -317,7 +317,7 @@ async def forgot_password(request: Request, email: str = Form(...), db: Session 
         }
 
         # Send email with the reset link
-        reset_link = f"http://localhost:8000/reset-password?token={reset_token}"
+        reset_link = f"https://super-duper-memory-v66vwrv6x5g53479-8000.app.github.dev/reset-password?token={reset_token}"
         subject = "Forgot Password"
         body = f"Password reset Request, Click here to reset your password: {reset_link}"
         try:
