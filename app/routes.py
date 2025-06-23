@@ -796,9 +796,8 @@ async def create_stripe_session(
                 'total_price': booking_data['total_price'],
                 'tour_date': booking_data['tour_date']
             },
-            success_url=str(request.url_for('payment_success')) + "?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=str(request.url_for('payment_page'))
-        )
+            success_url = f"{BASE_URL.rstrip('/')}/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url = f"{BASE_URL.rstrip('/')}/payment")
 
         return JSONResponse({"id": session.id})
 
