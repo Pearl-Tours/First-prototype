@@ -322,3 +322,57 @@
   margin-bottom: 1rem;
   color: var(--primary-blue);
 }
+
+/* ================================
+   contact Section
+================================= */
+.contact-box i {
+  color: #003366;
+}
+
+.contact-box h5 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
+.contact-box p {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Brand background */
+#stats {
+  background-color: #fbfeec;
+}
+
+/* Light soft blue for teams */
+#teams {
+  background-color: #f0f8ff;
+  /* Light, friendly */
+}
+
+/* Soft neutral for testimonials */
+#testimonials {
+  background-color: #f2f2f2;
+}
+
+.footer {
+  background-color: #003366;
+}
+
+.footer a.footer-link {
+  color: #ffffff;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.footer a.footer-link:hover {
+  text-decoration: underline;
+  color: #ffd700; /* Optional: highlight on hover */
+}
+
+.footer i {
+  font-size: 1.2rem;
+}
