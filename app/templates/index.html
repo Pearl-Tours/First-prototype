@@ -1,444 +1,572 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="/static/css/index.css" rel="stylesheet">
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="/static/css/index.css" rel="stylesheet" />
+  </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom-blue px-3 sticky-top">
-        <div class="container-fluid d-flex align-items-center justify-content-between">
-            <a class="navbar-brand d-flex align-items-center" href="/home">
-                <i class="bi bi-gem me-2 text-light"></i>PearlTours
-            </a>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark navbar-custom-blue px-3 sticky-top"
+    >
+      <div
+        class="container-fluid d-flex align-items-center justify-content-between"
+      >
+        <a class="navbar-brand d-flex align-items-center" href="/home">
+          <i class="bi bi-gem me-2 text-light"></i>PearlTours
+        </a>
 
-            <div class="d-none d-lg-flex mx-auto">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/tours"><i class="bi bi-map"></i> Tours</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about-us"><i class="bi bi-info-circle"></i> About
-                            Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/cultures"><i class="bi bi-people"></i> Cultures</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="#contact"><i class="bi bi-envelope"></i> Contacts</a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Login/Signup buttons (always on the right) -->
-            <div class="d-none d-lg-flex align-items-center ms-auto">
-                <a class="btn btn-outline-light me-2" href="/login">
-                    <i class="bi bi-box-arrow-in-right"></i> Login
-                </a>
-                <a class="btn btn-light text-primary" href="/signup">
-                    <i class="bi bi-person-plus"></i> Signup
-                </a>
-            </div>
-
-            <!-- Toggle button (visible only on small screens) -->
-            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <div class="d-none d-lg-flex mx-auto">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/"
+                ><i class="bi bi-house-door"></i> Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/tours"
+                ><i class="bi bi-map"></i> Tours</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about-us"
+                ><i class="bi bi-info-circle"></i> About Us</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cultures"
+                ><i class="bi bi-people"></i> Cultures</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact"
+                ><i class="bi bi-envelope"></i> Contacts</a
+              >
+            </li>
+          </ul>
         </div>
 
-        <!-- Offcanvas menu for small screens -->
-        <div class="offcanvas offcanvas-end d-lg-none" tabindex="-1" id="offcanvasNavbar">
-            <div class="offcanvas-header navbar-custom-blue w-100 justify-content-center">
-                <h5 class="offcanvas-title text-light text-center w-100">Menu</h5>
-                <button type="button" class="btn-close btn-close-white position-absolute end-0 me-3"
-                    data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body navbar-custom-blue d-flex flex-column align-items-center">
-                <ul class="navbar-nav d-flex flex-column align-items-center w-100">
-                    <li class="nav-item mb-2"><a class="nav-link" href="/"><i class="bi bi-house-door"></i> Home</a>
-                    </li>
-                    <li class="nav-item mb-2"><a class="nav-link" href="/tours"><i class="bi bi-map"></i> Tours</a></li>
-                    <li class="nav-item mb-2"><a class="nav-link" href="#about-us"><i class="bi bi-info-circle"></i>
-                            About Us</a></li>
-                    <li class="nav-item mb-2"><a class="nav-link" href="/cultures"><i class="bi bi-people"></i>
-                            Cultures</a></li>
-                    <li class="nav-item mb-2"><a class="nav-link" href="#contact"><i class="bi bi-envelope"></i>
-                            Contacts</a></li>
-                    <li class="nav-item w-75 mb-2">
-                        <a class="btn btn-outline-light w-100" href="/login">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
-                        </a>
-                    </li>
-                    <li class="nav-item w-75">
-                        <a class="btn btn-light text-primary w-100" href="/signup">
-                            <i class="bi bi-person-plus"></i> Signup
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <!-- Login/Signup buttons (always on the right) -->
+        <div class="d-none d-lg-flex align-items-center ms-auto">
+          <a class="btn btn-outline-light me-2" href="/login">
+            <i class="bi bi-box-arrow-in-right"></i> Login
+          </a>
+          <a class="btn btn-light text-primary" href="/signup">
+            <i class="bi bi-person-plus"></i> Signup
+          </a>
         </div>
-    </nav>
 
+        <!-- Toggle button (visible only on small screens) -->
+        <button
+          class="navbar-toggler d-lg-none"
+          type="button"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasNavbar"
+          aria-controls="offcanvasNavbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
 
-    <section class="video-hero position-relative overflow-hidden">
-        <div class="video-container position-absolute w-100 h-100 top-0 start-0">
-            <video autoplay muted loop playsinline class="w-100 h-100 object-fit-cover">
-                <source src="static/vds/11760750-uhd_4096_2160_30fps.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+      <!-- Offcanvas menu for small screens -->
+      <div
+        class="offcanvas offcanvas-end d-lg-none"
+        tabindex="-1"
+        id="offcanvasNavbar"
+      >
+        <div
+          class="offcanvas-header navbar-custom-blue w-100 justify-content-center"
+        >
+          <h5 class="offcanvas-title text-light text-center w-100">Menu</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white position-absolute end-0 me-3"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
         </div>
         <div
-            class="video-overlay position-relative text-white text-center d-flex flex-column justify-content-center align-items-center h-100">
-            <h1 class="display-3 fw-bold">PEARL TOURS</h1>
-            <h2 class="h4 fw-light">Discover Uganda</h2>
-            <p class="lead mb-4">Experience the Pearl of Africa</p>
-            <a href="/tours" class="btn btn-outline-light btn-lg">Explore Tours</a>
+          class="offcanvas-body navbar-custom-blue d-flex flex-column align-items-center"
+        >
+          <ul class="navbar-nav d-flex flex-column align-items-center w-100">
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="/"
+                ><i class="bi bi-house-door"></i> Home</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="/tours"
+                ><i class="bi bi-map"></i> Tours</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="#about-us"
+                ><i class="bi bi-info-circle"></i> About Us</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="/cultures"
+                ><i class="bi bi-people"></i> Cultures</a
+              >
+            </li>
+            <li class="nav-item mb-2">
+              <a class="nav-link" href="#contact"
+                ><i class="bi bi-envelope"></i> Contacts</a
+              >
+            </li>
+            <li class="nav-item w-75 mb-2">
+              <a class="btn btn-outline-light w-100" href="/login">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+              </a>
+            </li>
+            <li class="nav-item w-75">
+              <a class="btn btn-light text-primary w-100" href="/signup">
+                <i class="bi bi-person-plus"></i> Signup
+              </a>
+            </li>
+          </ul>
         </div>
+      </div>
+    </nav>
+
+    <section class="video-hero position-relative overflow-hidden">
+      <div class="video-container position-absolute w-100 h-100 top-0 start-0">
+        <video
+          autoplay
+          muted
+          loop
+          playsinline
+          class="w-100 h-100 object-fit-cover"
+        >
+          <source
+            src="static/vds/11760750-uhd_4096_2160_30fps.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div
+        class="video-overlay position-relative text-white text-center d-flex flex-column justify-content-center align-items-center h-100"
+      >
+        <h1 class="display-3 fw-bold">PEARL TOURS</h1>
+        <h2 class="h4 fw-light">Discover Uganda</h2>
+        <p class="lead mb-4">Experience the Pearl of Africa</p>
+        <a href="/tours" class="btn btn-outline-light btn-lg">Explore Tours</a>
+      </div>
     </section>
     <!-- About Us Section -->
     <section id="about-us" class="bg-light section-narrow">
-        <div class="container">
-            <h2 class="text-center section-title">Why Choose Us?</h2>
-            <p class="text-center lead mb-5">At Travel Adventures, we're committed to providing unforgettable travel
-                experiences</p>
+      <div class="container">
+        <h2 class="text-center section-title">Why Choose Us?</h2>
+        <p class="text-center lead mb-5">
+          At Travel Adventures, we're committed to providing unforgettable
+          travel experiences
+        </p>
 
-            <!-- Benefits Grid -->
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="benefit-icon">
-                                <i class="fas fa-headset"></i>
-                            </div>
-                            <h3>24/7 Support</h3>
-                            <p class="text-muted">Our dedicated team is available round-the-clock to assist you before,
-                                during, and after your trip.</p>
-                        </div>
-                    </div>
+        <!-- Benefits Grid -->
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="benefit-icon">
+                  <i class="fas fa-headset"></i>
                 </div>
-
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="benefit-icon">
-                                <i class="fas fa-map-marked-alt"></i>
-                            </div>
-                            <h3>Trusted Local Guides</h3>
-                            <p class="text-muted">We work exclusively with knowledgeable local guides who bring
-                                destinations to life with authentic insights.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="benefit-icon">
-                                <i class="fas fa-credit-card"></i>
-                            </div>
-                            <h3>Flexible Payments</h3>
-                            <p class="text-muted">Choose from multiple payment options with no hidden fees and flexible
-                                cancellation policies.</p>
-                        </div>
-                    </div>
-                </div>
+                <h3>24/7 Support</h3>
+                <p class="text-muted">
+                  Our dedicated team is available round-the-clock to assist you
+                  before, during, and after your trip.
+                </p>
+              </div>
             </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="benefit-icon">
+                  <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3>Trusted Local Guides</h3>
+                <p class="text-muted">
+                  We work exclusively with knowledgeable local guides who bring
+                  destinations to life with authentic insights.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body text-center p-4">
+                <div class="benefit-icon">
+                  <i class="fas fa-credit-card"></i>
+                </div>
+                <h3>Flexible Payments</h3>
+                <p class="text-muted">
+                  Choose from multiple payment options with no hidden fees and
+                  flexible cancellation policies.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Testimonials Section -->
     <section id="testimonials" class="section-narrow">
-        <div class="container">
-            <h2 class="text-center section-title">What Our Travelers Say</h2>
+      <div class="container">
+        <h2 class="text-center section-title">What Our Travelers Say</h2>
 
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="card h-100 testimonial-card">
-                        <div class="card-body p-4">
-                            <div class="mb-3">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <p class="fst-italic">"The best-organized tour I've ever experienced! Our guide made history
-                                come alive."</p>
-                            <div class="d-flex align-items-center mt-3">
-                                <img src="https://randomuser.me/api/portraits/women/32.jpg" class="rounded-circle me-3"
-                                    width="50" alt="Sarah">
-                                <div>
-                                    <h6 class="mb-0">Sarah M.</h6>
-                                    <small class="text-muted">Adventure Seeker</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card h-100 testimonial-card">
+              <div class="card-body p-4">
+                <div class="mb-3">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
                 </div>
-
-                <div class="col-md-6">
-                    <div class="card h-100 testimonial-card">
-                        <div class="card-body p-4">
-                            <div class="mb-3">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <p class="fst-italic">"Flawless from booking to return. The 24/7 support really saved us
-                                when our flight was delayed."</p>
-                            <div class="d-flex align-items-center mt-3">
-                                <img src="https://randomuser.me/api/portraits/men/45.jpg" class="rounded-circle me-3"
-                                    width="50" alt="John">
-                                <div>
-                                    <h6 class="mb-0">The Johnson Family</h6>
-                                    <small class="text-muted">Family Travelers</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <p class="fst-italic">
+                  "The best-organized tour I've ever experienced! Our guide made
+                  history come alive."
+                </p>
+                <div class="d-flex align-items-center mt-3">
+                  <img
+                    src="https://randomuser.me/api/portraits/women/32.jpg"
+                    class="rounded-circle me-3"
+                    width="50"
+                    alt="Sarah"
+                  />
+                  <div>
+                    <h6 class="mb-0">Sarah M.</h6>
+                    <small class="text-muted">Adventure Seeker</small>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="card h-100 testimonial-card">
+              <div class="card-body p-4">
+                <div class="mb-3">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                </div>
+                <p class="fst-italic">
+                  "Flawless from booking to return. The 24/7 support really
+                  saved us when our flight was delayed."
+                </p>
+                <div class="d-flex align-items-center mt-3">
+                  <img
+                    src="https://randomuser.me/api/portraits/men/45.jpg"
+                    class="rounded-circle me-3"
+                    width="50"
+                    alt="John"
+                  />
+                  <div>
+                    <h6 class="mb-0">The Johnson Family</h6>
+                    <small class="text-muted">Family Travelers</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- How It Works Section -->
     <section id="process" class="bg-light section-narrow">
-        <div class="container">
-            <h2 class="text-center section-title">How It Works</h2>
+      <div class="container">
+        <h2 class="text-center section-title">How It Works</h2>
 
-            <div class="row g-4">
-                <div class="col-md-4 process-step">
-                    <div class="process-number">1</div>
-                    <h3>Choose Your Trip</h3>
-                    <p>Browse our curated collection of unforgettable experiences</p>
-                </div>
+        <div class="row g-4">
+          <div class="col-md-4 process-step">
+            <div class="process-number">1</div>
+            <h3>Choose Your Trip</h3>
+            <p>Browse our curated collection of unforgettable experiences</p>
+          </div>
 
-                <div class="col-md-4 process-step">
-                    <div class="process-number">2</div>
-                    <h3>Book & Pay</h3>
-                    <p>Secure your spot with our easy online system</p>
-                </div>
+          <div class="col-md-4 process-step">
+            <div class="process-number">2</div>
+            <h3>Book & Pay</h3>
+            <p>Secure your spot with our easy online system</p>
+          </div>
 
-                <div class="col-md-4 process-step">
-                    <div class="process-number">3</div>
-                    <h3>Travel & Enjoy</h3>
-                    <p>We handle the details so you can focus on making memories</p>
-                </div>
-            </div>
+          <div class="col-md-4 process-step">
+            <div class="process-number">3</div>
+            <h3>Travel & Enjoy</h3>
+            <p>We handle the details so you can focus on making memories</p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Stats Section -->
     <section id="stats" class="section-narrow">
-        <div class="container">
-            <div class="row text-center g-4">
-                <div class="col-6 col-md-3">
-                    <div class="stat-number">10,000</div>
-                    <p class="text-muted">Happy Clients</p>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-number">150</div>
-                    <p class="text-muted">Tour Packages</p>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-number">50</div>
-                    <p class="text-muted">Destinations</p>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-number">15</div>
-                    <p class="text-muted">Years Experience</p>
-                </div>
-            </div>
+      <div class="container">
+        <div class="row text-center g-4">
+          <div class="col-6 col-md-3">
+            <div class="stat-number">10,000</div>
+            <p class="text-muted">Happy Clients</p>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-number">150</div>
+            <p class="text-muted">Tour Packages</p>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-number">50</div>
+            <p class="text-muted">Destinations</p>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-number">15</div>
+            <p class="text-muted">Years Experience</p>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- Team Section -->
     <section id="team" class="bg-light section-narrow">
-        <div class="container">
-            <h2 class="text-center section-title">Our Team</h2>
-            <p class="text-center lead mb-5">Meet the passionate professionals behind your perfect trip</p>
+      <div class="container">
+        <h2 class="text-center section-title">Our Team</h2>
+        <p class="text-center lead mb-5">
+          Meet the passionate professionals behind your perfect trip
+        </p>
 
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-4 col-lg-3 text-center">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="profile-circle mb-3"
-                        alt="Team Member">
-                    <h4>Sarah Johnson</h4>
-                    <p class="text-muted">Travel Consultant</p>
-                </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-4 col-lg-3 text-center">
+            <img
+              src="https://randomuser.me/api/portraits/women/44.jpg"
+              class="profile-circle mb-3"
+              alt="Team Member"
+            />
+            <h4>Sarah Johnson</h4>
+            <p class="text-muted">Travel Consultant</p>
+          </div>
 
-                <div class="col-md-4 col-lg-3 text-center">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="profile-circle mb-3"
-                        alt="Team Member">
-                    <h4>Michael Chen</h4>
-                    <p class="text-muted">Destination Expert</p>
-                </div>
+          <div class="col-md-4 col-lg-3 text-center">
+            <img
+              src="https://randomuser.me/api/portraits/men/32.jpg"
+              class="profile-circle mb-3"
+              alt="Team Member"
+            />
+            <h4>Michael Chen</h4>
+            <p class="text-muted">Destination Expert</p>
+          </div>
 
-                <div class="col-md-4 col-lg-3 text-center">
-                    <img src="https://randomuser.me/api/portraits/women/68.jpg" class="profile-circle mb-3"
-                        alt="Team Member">
-                    <h4>Emma Rodriguez</h4>
-                    <p class="text-muted">Customer Support</p>
-                </div>
+          <div class="col-md-4 col-lg-3 text-center">
+            <img
+              src="https://randomuser.me/api/portraits/women/68.jpg"
+              class="profile-circle mb-3"
+              alt="Team Member"
+            />
+            <h4>Emma Rodriguez</h4>
+            <p class="text-muted">Customer Support</p>
+          </div>
 
-                <div class="col-md-4 col-lg-3 text-center">
-                    <img src="https://randomuser.me/api/portraits/men/75.jpg" class="profile-circle mb-3"
-                        alt="Team Member">
-                    <h4>David Wilson</h4>
-                    <p class="text-muted">Operations Manager</p>
-                </div>
-                <div class="col-md-4 col-lg-3 text-center">
-                    <img src="https://randomuser.me/api/portraits/men/75.jpg" class="profile-circle mb-3"
-                        alt="Team Member">
-                    <h4>David Wilson</h4>
-                    <p class="text-muted">Operations Manager</p>
-                </div>
-            </div>
+          <div class="col-md-4 col-lg-3 text-center">
+            <img
+              src="https://randomuser.me/api/portraits/men/75.jpg"
+              class="profile-circle mb-3"
+              alt="Team Member"
+            />
+            <h4>David Wilson</h4>
+            <p class="text-muted">Operations Manager</p>
+          </div>
+          <div class="col-md-4 col-lg-3 text-center">
+            <img
+              src="https://randomuser.me/api/portraits/men/75.jpg"
+              class="profile-circle mb-3"
+              alt="Team Member"
+            />
+            <h4>David Wilson</h4>
+            <p class="text-muted">Operations Manager</p>
+          </div>
         </div>
+      </div>
     </section>
     <!-- Contact Section -->
     <section id="contact" class="contact-section py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center section-title">We’d Love to Hear From You</h2>
-            <div class="row text-center g-4">
-                <div class="col-md-6 col-lg-3">
-                    <div class="contact-box shadow-sm p-4 bg-white rounded">
-                        <div class="mb-3">
-                            <i class="bi bi-telephone-fill fs-2"></i>
-                        </div>
-                        <h5 class="fw-bold">Phone Number</h5>
-                        <p class="mb-0">+91 80004 36640</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="contact-box shadow-sm p-4 bg-white rounded">
-                        <div class="mb-3">
-                            <i class="bi bi-envelope-fill fs-2"></i>
-                        </div>
-                        <h5 class="fw-bold">Email</h5>
-                        <p class="mb-0">info@expertwebdesigning.com</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="contact-box shadow-sm p-4 bg-white rounded">
-                        <div class="mb-3">
-                            <i class="bi bi-geo-alt-fill fs-2"></i>
-                        </div>
-                        <h5 class="fw-bold">Location</h5>
-                        <p class="mb-0">
-                            518, Rhythm Plaza, Amar Javan Circle,<br>
-                            Nikol, Ahmedabad, Gujarat - 382350
-                        </p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="contact-box shadow-sm p-4 bg-white rounded">
-                        <div class="mb-3">
-                            <i class="bi bi-clock-fill fs-2"></i>
-                        </div>
-                        <h5 class="fw-bold">Working Hours</h5>
-                        <p class="mb-0">Monday To Saturday</p>
-                        <p class="mb-0">09:00 AM To 06:00 PM</p>
-                    </div>
-                </div>
-
+      <div class="container">
+        <h2 class="text-center section-title">We’d Love to Hear From You</h2>
+        <div class="row text-center g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="contact-box shadow-sm p-4 bg-white rounded">
+              <div class="mb-3">
+                <i class="bi bi-telephone-fill fs-2"></i>
+              </div>
+              <h5 class="fw-bold">Phone Number</h5>
+              <p class="mb-0">+91 80004 36640</p>
             </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="contact-box shadow-sm p-4 bg-white rounded">
+              <div class="mb-3">
+                <i class="bi bi-envelope-fill fs-2"></i>
+              </div>
+              <h5 class="fw-bold">Email</h5>
+              <p class="mb-0">info@expertwebdesigning.com</p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="contact-box shadow-sm p-4 bg-white rounded">
+              <div class="mb-3">
+                <i class="bi bi-geo-alt-fill fs-2"></i>
+              </div>
+              <h5 class="fw-bold">Location</h5>
+              <p class="mb-0">
+                518, Rhythm Plaza, Amar Javan Circle,<br />
+                Nikol, Ahmedabad, Gujarat - 382350
+              </p>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="contact-box shadow-sm p-4 bg-white rounded">
+              <div class="mb-3">
+                <i class="bi bi-clock-fill fs-2"></i>
+              </div>
+              <h5 class="fw-bold">Working Hours</h5>
+              <p class="mb-0">Monday To Saturday</p>
+              <p class="mb-0">09:00 AM To 06:00 PM</p>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
-    
+
     <footer class="footer pt-5 pb-4 text-white">
-        <div class="container">
-            <div class="row">
+      <div class="container">
+        <div class="row">
+          <!-- Brand Info -->
+          <div class="col-md-3 mb-4">
+            <h4 class="fw-bold">Pearl Tours</h4>
+            <p>
+              Discover Uganda’s beauty with our curated tours, cultural trips,
+              and wildlife adventures.
+            </p>
+          </div>
 
-                <!-- Brand Info -->
-                <div class="col-md-3 mb-4">
-                    <h4 class="fw-bold">Pearl Tours</h4>
-                    <p>Discover Uganda’s beauty with our curated tours, cultural trips, and wildlife adventures.</p>
-                </div>
+          <!-- Quick Links -->
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="/" class="footer-link">Home</a></li>
+              <li><a href="#about-us" class="footer-link">About Us</a></li>
+              <li><a href="/tours" class="footer-link">Tours</a></li>
+              <li><a href="#contact" class="footer-link">Contact</a></li>
+              <li><a href="#cultures" class="footer-link">Cultures</a></li>
+            </ul>
+          </div>
 
-                <!-- Quick Links -->
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-semibold">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/" class="footer-link">Home</a></li>
-                        <li><a href="#about-us" class="footer-link">About Us</a></li>
-                        <li><a href="/tours" class="footer-link">Tours</a></li>
-                        <li><a href="#contact" class="footer-link">Contact</a></li>
-                        <li><a href="#cultures" class="footer-link">Cultures</a></li>
-                    </ul>
-                </div>
+          <!-- Hotel Partners & Parks -->
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Partnerships</h5>
+            <ul class="list-unstyled">
+              <li><a href="#" class="footer-link">Serena Hotels</a></li>
+              <li><a href="#" class="footer-link">Protea Hotel</a></li>
+              <li><a href="#" class="footer-link">Mweya Safari Lodge</a></li>
+            </ul>
+            <h6 class="fw-semibold mt-3">National Parks</h6>
+            <ul class="list-unstyled">
+              <li><a href="#" class="footer-link">Queen Elizabeth NP</a></li>
+              <li>
+                <a href="#" class="footer-link">Bwindi Impenetrable NP</a>
+              </li>
+              <li><a href="#" class="footer-link">Murchison Falls NP</a></li>
+            </ul>
+          </div>
 
-                <!-- Hotel Partners & Parks -->
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-semibold">Partnerships</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Serena Hotels</a></li>
-                        <li><a href="#" class="footer-link">Protea Hotel</a></li>
-                        <li><a href="#" class="footer-link">Mweya Safari Lodge</a></li>
-                    </ul>
-                    <h6 class="fw-semibold mt-3">National Parks</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="footer-link">Queen Elizabeth NP</a></li>
-                        <li><a href="#" class="footer-link">Bwindi Impenetrable NP</a></li>
-                        <li><a href="#" class="footer-link">Murchison Falls NP</a></li>
-                    </ul>
-                </div>
+          <!-- Contact & Socials -->
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Contact Us</h5>
+            <p><i class="bi bi-telephone-fill me-2"></i> +256 700 123 456</p>
+            <p><i class="bi bi-envelope-fill me-2"></i> info@pearltours.ug</p>
+            <p><i class="bi bi-geo-alt-fill me-2"></i> Kampala, Uganda</p>
 
-
-                <!-- Contact & Socials -->
-                <div class="col-md-3 mb-4">
-                    <h5 class="fw-semibold">Contact Us</h5>
-                    <p><i class="bi bi-telephone-fill me-2"></i> +256 700 123 456</p>
-                    <p><i class="bi bi-envelope-fill me-2"></i> info@pearltours.ug</p>
-                    <p><i class="bi bi-geo-alt-fill me-2"></i> Kampala, Uganda</p>
-
-                    <!-- Social Media Icons -->
-                    <div class="mt-3 mb-3">
-                        <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-twitter"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-youtube"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-tiktok"></i></a>
-                    </div>
-
-                    <li class="nav-item list-unstyled">
-                        {% if user %}
-                        {% if user.newsletter_subscribed %}
-                        <form action="/user/unsubscribe_newsletter" method="post" class="w-100">
-                            <button type="submit" class="btn btn-warning w-100">Unsubscribe</button>
-                        </form>
-                        {% else %}
-                        <form action="/subscribe_newsletter" method="post" class="w-100">
-                            <button type="submit" class="btn btn-info w-100">Subscribe</button>
-                        </form>
-                        {% endif %}
-                        {% else %}
-                        <a href="/login" class="btn btn-info w-100 text-center">Get Updates</a>
-                        {% endif %}
-                    </li>
-
-                </div>
-
-
-                <!-- Copyright -->
-                <div class="text-center pt-3 border-top mt-4">
-                    <small>&copy; 2025 Pearl Tours. All rights reserved.</small>
-                </div>
+            <!-- Social Media Icons -->
+            <div class="mt-3 mb-3">
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-facebook"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-twitter"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-youtube"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-tiktok"></i
+              ></a>
             </div>
+
+            <li class="nav-item list-unstyled">
+              {% if user %} {% if user.newsletter_subscribed %}
+              <form
+                action="/user/unsubscribe_newsletter"
+                method="post"
+                class="w-100"
+              >
+                <button type="submit" class="btn btn-warning w-100">
+                  Unsubscribe
+                </button>
+              </form>
+              {% else %}
+              <form action="/subscribe_newsletter" method="post" class="w-100">
+                <button type="submit" class="btn btn-info w-100">
+                  Subscribe
+                </button>
+              </form>
+              {% endif %} {% else %}
+              <a href="/login" class="btn btn-info w-100 text-center"
+                >Get Updates</a
+              >
+              {% endif %}
+            </li>
+          </div>
+        </div>
+        <!-- Close row -->
+
+        <!-- Copyright -->
+        <div class="text-center pt-3 border-top mt-4">
+          <small>&copy; 2025 Pearl Tours. All rights reserved.</small>
+        </div>
+      </div>
+      <!-- Close container -->
     </footer>
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/index.js"></script>
-    <script src="//code.tidio.co/00ji7zmrvbf9k3mgaxbbrhx92kosg6qn.js" async></script>
-
-</body>
-
+    <script
+      src="//code.tidio.co/00ji7zmrvbf9k3mgaxbbrhx92kosg6qn.js"
+      async
+    ></script>
+  </body>
 </html>

@@ -40,13 +40,6 @@ body {
   color: #dbe9ff;
 }
 
-h1 {
-  text-align: center;
-  margin: 20px 0;
-  font-weight: bold;
-  color: var(--primary-blue);
-}
-
 .custom-card {
   background-color: white;
   border-radius: 12px;
@@ -123,7 +116,7 @@ h1 {
 
 .price-tag {
   background-color: var(--price-bg);
-  border-left: 4px solid #007BFF;
+  border-left: 4px solid #007bff;
   padding: 6px 12px;
   border-radius: 20px;
   font-weight: 600;
@@ -134,7 +127,7 @@ h1 {
 }
 
 .book-btn {
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   font-weight: 600;
   border-radius: 30px;
