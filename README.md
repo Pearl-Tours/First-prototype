@@ -4,10 +4,10 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 
 ## Technologies Used
 
-*   **Backend:** Python, Flask
-*   **Frontend:** HTML, CSS, JavaScript, Bootstrap
-*   **Database:** SQLAlchemy (with SQLite for development/testing)
-*   **Containerization:** Docker, Docker Compose
+- **Backend:** Python, Flask
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap
+- **Database:** SQLAlchemy (with SQLite for development/testing)
+- **Containerization:** Docker, Docker Compose
 
 ## Project Structure
 
@@ -32,26 +32,29 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 
 ### Prerequisites
 
-*   Python 3.8+
-*   pip (Python package installer)
-*   Docker (optional, for containerized setup)
-*   Docker Compose (optional, for containerized setup)
+- Python 3.8+
+- pip (Python package installer)
+- Docker (optional, for containerized setup)
+- Docker Compose (optional, for containerized setup)
 
 ### Local Development (Without Docker)
 
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd <repository-directory>
     ```
 
 2.  **Create a virtual environment (recommended):**
+
     ```bash
     python -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
     ```
 
 3.  **Install dependencies:**
+
     ```bash
     pip install -r requirements.txt
     ```
@@ -59,11 +62,12 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 4.  **Initialize the database (if applicable):**
     The application uses Flask-Migrate or similar, or database tables are created on first run. (Details might need to be added here based on `database.py` or `models.py` specifics).
     For instance, if there is an admin creation script:
-    ```bash
-    python app/create_admin.py
-    ```
-    (Verify if `test.db` is automatically created or needs a command)
 
+    ```bash
+    python -m app.create_admin
+    ```
+
+    (Verify if `test.db` is automatically created or needs a command)
 
 5.  **Run the application:**
     ```bash
@@ -78,9 +82,11 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 2.  **Navigate to the project root directory.**
 
 3.  **Build and run the services:**
+
     ```bash
     docker-compose up --build
     ```
+
     The application will be accessible, usually at `http://localhost:5000` (or as configured in `docker-compose.yaml`).
 
 4.  **To stop the services:**
