@@ -66,6 +66,8 @@ class Booking(Base):
     payment_method = Column(String(20))
     payment_id = Column(String(50))
     payment_status = Column(String)
+    deleted_at = Column(DateTime, nullable=True) 
+    cancelled_at = Column(DateTime, nullable=True) 
     @property
     def participant_count(self):
         return self.adults + self.kids

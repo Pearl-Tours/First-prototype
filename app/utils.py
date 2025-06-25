@@ -14,8 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
  
 #Uses the base URL from environment variable or defaults to localhost
-
-BASE_URL = os.getenv("BASE_URL","http://localhost:8000")
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 base = BASE_URL.rstrip('/')
 
 
