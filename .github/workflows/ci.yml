@@ -25,7 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov build
+          pip install pytest pytest-cov
 
       - name: Run tests with coverage
         run: |
@@ -46,20 +46,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install build tool
-        run: |
-          python -m pip install --upgrade pip
-          pip install build
-
-      - name: Build package
-        run: python -m build
-        # outputs dist/*.whl and dist/*.tar.gz
-
       - name: Download coverage report from test job
         uses: actions/download-artifact@v4
         with:
@@ -68,8 +54,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            dist/*
-            coverage.xml
+          files: coverage.xml
         env:
           GITHUB_TOKEN: ${{ secrets.PEARL }}
