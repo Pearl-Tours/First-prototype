@@ -4,9 +4,9 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 
 ## Technologies Used
 
-- **Backend:** Python, Flask
-- **Frontend:** HTML, CSS, JavaScript, Bootstrap
-- **Database:** SQLAlchemy (with SQLite for development/testing)
+- **Backend:** Python, FastApi
+- **Frontend:** HTML, CSS, JavaScript, Bootstrap, TailWard
+- **Database:** mySQL(with SQLite for development/testing)
 - **Containerization:** Docker, Docker Compose
 
 ## Project Structure
@@ -26,6 +26,8 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 ├── docker-compose.yaml     # Docker Compose configuration
 ├── requirements.txt        # Python dependencies
 └── README.md               # This file
+|__ Tests                   # code testing
+|__ .github\workflows       # Github actions workflows
 ```
 
 ## Setup and Running the Project
@@ -50,7 +52,7 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 
     ```bash
     python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    source venv/Scripts/activate  # On Windows: venv\Scripts\activate
     ```
 
 3.  **Install dependencies:**
@@ -71,9 +73,9 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 
 5.  **Run the application:**
     ```bash
-    python app/main.py
+    uvicorn app.main:app --reload --host localhost
     ```
-    The application should typically be accessible at `http://127.0.0.1:5000`.
+    The application should typically be accessible at `http://localhost:8000`.
 
 ### Using Docker Compose (Recommended for ease of use)
 
@@ -87,7 +89,7 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
     docker-compose up --build
     ```
 
-    The application will be accessible, usually at `http://localhost:5000` (or as configured in `docker-compose.yaml`).
+    The application will be accessible, usually at `http://localhost:8000` (or as configured in `docker-compose.yaml`).
 
 4.  **To stop the services:**
     ```bash
