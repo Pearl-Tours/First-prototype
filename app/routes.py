@@ -512,6 +512,8 @@ async def process_booking(
     adults: int = Form(...),
     kids: int = Form(...),
     tour_date: str = Form(...),
+    donate: Optional[str] = Form(None),
+
     tour_type: str = Form('normal'),#Setting the default tour type to 'normal'
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
@@ -540,12 +542,20 @@ async def process_booking(
         # Calculate total price
         total_price = (adults + kids) * tour.price
         
+        
         #Adding private tour price adjustment
         if tour_type == 'private':
             total_price *= 1.35  # 35% increase for private tours
+            
             request.session['tour_type'] = 'private'
         else:
-            request.session['tour_type'] = 'normal' # Making the tour type normal by default    
+            request.session['tour_type'] = 'normal' # Making the tour type normal by default   
+          
+        donation_amount = 10.0 if donate else 0.0
+        
+        total_price += donation_amount
+        
+    
 
         # Store booking in session
         request.session['booking'] = {
@@ -553,6 +563,7 @@ async def process_booking(
             "adults": adults,
             "kids": kids,
             "tour_date": tour_date,
+            "donation": donation_amount,  # Store donation amount
             "total_price": float(total_price)  # Ensure JSON serializable
         }
 
@@ -761,8 +772,10 @@ async def complete_booking(
             kids=booking_data["kids"],
             tour_date=datetime.strptime(booking_data["tour_date"], "%Y-%m-%d"),
             total_price=booking_data["total_price"],
+            donation=booking_data.get('donation', 0.0),
             payment_id=payment_data["payment_id"],
             payment_status=payment_data["status"]
+            
         )
         
         db.add(new_booking)
@@ -819,6 +832,9 @@ async def create_stripe_session(
         tour = db.query(Tour).filter(Tour.id == booking_data["tour_id"]).first()
         if not tour:
             raise HTTPException(status_code=404, detail="Tour not found")
+        
+        donation_amount = float(booking_data.get("donation", 0.0))
+        total_price = float(booking_data["total_price"])  
 
         # Create Stripe session
         session = stripe.checkout.Session.create(
@@ -840,7 +856,11 @@ async def create_stripe_session(
                 'tour_id': tour.id,
                 'adults': booking_data['adults'],
                 'kids': booking_data['kids'],
-                'total_price': booking_data['total_price'],
+                #'total_price': booking_data['total_price'],
+                'total_price': str(total_price),
+                
+
+
                 'tour_date': booking_data['tour_date']
             },
             success_url = f"{BASE_URL.rstrip('/')}/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
@@ -873,6 +893,7 @@ async def payment_success(
             total_price=session.metadata['total_price'],
             payment_method='stripe',
             payment_id=session.payment_intent,
+            
             payment_status='completed'
         )
         

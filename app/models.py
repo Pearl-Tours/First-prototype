@@ -68,6 +68,7 @@ class Booking(Base):
     payment_status = Column(String)
     deleted_at = Column(DateTime, nullable=True) 
     cancelled_at = Column(DateTime, nullable=True) 
+    donation = Column(Float, default=0.0)  # Store donation amount
     @property
     def participant_count(self):
         return self.adults + self.kids

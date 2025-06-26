@@ -218,6 +218,17 @@
                                             <div>${{ booking.total_price|round(2) }}</div>
                                         </div>
                                     </div>
+                                    {% if booking.donation %}
+<div class="detail-row">
+    <div class="d-flex justify-content-between">
+        <div>
+            <i class="bi bi-heart-fill me-1 text-danger"></i>
+            <strong>Donation:</strong>
+        </div>
+        <div>${{ booking.donation|round(2) }}</div>
+    </div>
+</div>
+{% endif %}
                                     
                                     <div class="detail-row">
                                         <div class="d-flex justify-content-between">
