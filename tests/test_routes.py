@@ -10,7 +10,7 @@ async def test_read_root():
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get("/")
     assert response.status_code == 200
-    assert "Uganda Tours" in response.text
+    assert "Pearl Tours" in response.text
 
 
 @pytest.mark.asyncio
