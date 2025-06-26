@@ -1,4 +1,4 @@
-name: CODE TESTING
+name: CODE-TESTING
 
 on:
   push:
