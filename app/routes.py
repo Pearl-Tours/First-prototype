@@ -1,5 +1,5 @@
 import uuid
-import pdfkit
+
 
 import os
 import stripe
@@ -19,13 +19,14 @@ from fastapi.encoders import jsonable_encoder
 from datetime import timedelta
 from fastapi import File, UploadFile
 from sqlalchemy.orm import joinedload
+from sqlalchemy import or_, and_
 from fastapi.responses import JSONResponse
 from fastapi import BackgroundTasks,Query
 
 #from app.database import Sessionlocal as DBSession
 
 # Uses the base URL from environment variable or defaults to localhost
-BASE_URL = os.getenv("BASE_URL","http://localhost:8000")
+BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -35,6 +36,11 @@ UPLOAD_DIR = "app/static/uploads/tours"
  
 
 templates = Jinja2Templates(directory="app/templates")# template setup
+@router.get("/")
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "title": "Uganda Tours"})
+
+
 regions = [
     {
         "id": "central",
@@ -108,13 +114,10 @@ regions = [
     }
 ]
 
-@router.get("/")
-async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "title": "Uganda Tours"})
-
 @router.get("/cultures", response_class=HTMLResponse)
 async def show_cultures(request: Request):
     return templates.TemplateResponse("uganda_culture.html", {"request": request, "regions": regions})
+
 
 @router.get("/tours", response_class=HTMLResponse)
 async def tours_page(
@@ -568,24 +571,41 @@ async def process_booking(
         
 ## Viewing of the Booked tours        
 @router.get("/my-bookings", response_class=HTMLResponse)
-async def view_bookings(
+async def my_bookings(
     request: Request,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
-    # Get all bookings for the current user with tour details
-    bookings = db.query(Booking).options(joinedload(Booking.tour)).filter(
-        Booking.user_id == user.id
-    ).order_by(Booking.tour_date.desc()).all()
-    current_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+    if not user:
+        return RedirectResponse(url="/login")
+
+    # Calculate date threshold (30 days ago)
+    one_month_ago = datetime.utcnow() - timedelta(days=30)
+    
+    # Query bookings with filters
+    bookings = db.query(Booking).filter(
+        Booking.user_id == user.id,
+        Booking.deleted_at.is_(None),
+        or_(
+            Booking.payment_status != 'cancelled',
+            and_(
+                Booking.payment_status == 'cancelled',
+                Booking.cancelled_at >= one_month_ago
+            )
+        )
+    ).all()
+    
+    # Get current datetime for cancellation eligibility checks
+    current_datetime = datetime.utcnow()
     
     return templates.TemplateResponse("my_bookings.html", {
         "request": request,
-        "user": user,
         "bookings": bookings,
-        "current_date": current_date,
-        "title": "My Bookings"
+        "current_datetime": current_datetime,  # Ensure this name matches template
+        "title": "My Bookings",
+        "user": user
     })
+# 
     
 # 
 
@@ -615,6 +635,7 @@ async def cancel_booking(
     
     # Update booking status
     booking.payment_status = "cancelled"
+    booking.cancelled_at = datetime.utcnow() 
     db.commit()
     
     # Send cancellation confirmation email
@@ -625,6 +646,32 @@ async def cancel_booking(
     )
     
     return RedirectResponse(url="/my-bookings", status_code=303)
+
+@router.post("/delete-booking/{booking_id}", response_class=RedirectResponse)
+async def delete_booking(
+    booking_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    # Fetch booking that meets deletion criteria
+    booking = db.query(Booking).filter(
+        Booking.id == booking_id,
+        Booking.user_id == user.id,
+        Booking.payment_status == 'cancelled',  # Only allow deletion of cancelled bookings
+        Booking.deleted_at.is_(None)  # Not already deleted
+    ).first()
+    
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    # Perform soft delete by setting deletion timestamp
+    booking.deleted_at = datetime.utcnow()
+    db.commit()
+    
+    return RedirectResponse(url="/my-bookings", status_code=303)
+   
+
+
 ## Download a tour booked receipt
 # @router.get("/download-ticket/{booking_id}")
 # async def download_ticket(
@@ -798,6 +845,7 @@ async def create_stripe_session(
             },
             success_url = f"{BASE_URL.rstrip('/')}/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url = f"{BASE_URL.rstrip('/')}/payment")
+        
 
         return JSONResponse({"id": session.id})
 
