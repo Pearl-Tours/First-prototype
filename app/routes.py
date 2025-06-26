@@ -19,14 +19,13 @@ from fastapi.encoders import jsonable_encoder
 from datetime import timedelta
 from fastapi import File, UploadFile
 from sqlalchemy.orm import joinedload
-from sqlalchemy import or_, and_
 from fastapi.responses import JSONResponse
 from fastapi import BackgroundTasks,Query
 
 #from app.database import Sessionlocal as DBSession
 
 # Uses the base URL from environment variable or defaults to localhost
-BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
+BASE_URL = os.getenv("BASE_URL","http://localhost:8000")
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -36,9 +35,86 @@ UPLOAD_DIR = "app/static/uploads/tours"
  
 
 templates = Jinja2Templates(directory="app/templates")# template setup
+regions = [
+    {
+        "id": "central",
+        "name": "Central Region",
+        "food": ["Luwombo", "Matooke", "Groundnut sauce"],
+        "dress": "Gomesi for women, Kanzu for men",
+        "tradition": "Buganda kingdom ceremonies",
+        "images": [
+            "central dance.jpg", "central.jpg", "lake victoria.jpg",
+            "backcloth.JPG", "food 2.JPG"
+        ],
+        "video": "XYZ123",
+        "credit": "@UgandaTourismBoard",
+        "testimonial": "The Buganda kingdom has a rich cultural heritage that dates back centuries."
+    },
+    {
+        "id": "eastern",
+        "name": "Eastern Uganda",
+        "food": ["Malewa", "Kwon kal", "Simsim paste"],
+        "dress": "Suuti for women, Kanzu for men",
+        "tradition": "Imbalu circumcision ceremony",
+        "images": [
+            "https://via.placeholder.com/300x180?text=Eastern+Uganda",
+            "https://via.placeholder.com/300x180?text=Imbalu+Ceremony"
+        ],
+        "video": "dQw4w9WgXcQ",
+        "credit": "@ExploreUganda",
+        "testimonial": "Our Imbalu ceremony is a rite of passage that connects generations."
+    },
+    {
+        "id": "western",
+        "name": "Western Uganda",
+        "food": ["Eshabwe", "Akaro", "Obushera"],
+        "dress": "Mushanana for women, Kanzu for men",
+        "tradition": "Cattle keeping ceremonies",
+        "images": [
+            "https://via.placeholder.com/300x180?text=Western+Uganda",
+            "https://via.placeholder.com/300x180?text=Ankole+Cattle"
+        ],
+        "video": "DEF789",
+        "credit": "@UgandaCulturalHeritage",
+        "testimonial": "Our long-horned Ankole cattle are a symbol of pride and wealth."
+    },
+    {
+        "id": "northern",
+        "name": "Northern Uganda",
+        "food": ["Simsim paste", "Millet", "Dried fish"],
+        "dress": "Colorful wraps, Beaded jewelry",
+        "tradition": "Acholi warrior dances and storytelling",
+        "images": [
+            "northenugandadress.JPG", "food 4.JPG", "food 3.JPG"
+        ],
+        "video": "WCwBlzeOY6U",
+        "credit": "@ExploreUganda",
+        "testimonial": "Northern Uganda is home to powerful stories, rhythms, and community spirit."
+    },
+    {
+        "id": "southern",
+        "name": "Southern Uganda",
+        "food": ["Matooke", "Groundnut sauce", "Smoked fish"],
+        "dress": "Gomesi, Bark cloth",
+        "tradition": "Buganda royal customs and clan systems",
+        "images": [
+            "https://via.placeholder.com/300x180?text=Southern+Uganda",
+            "https://via.placeholder.com/300x180?text=Buganda+Drums",
+            "https://via.placeholder.com/300x180?text=Smoked+Fish"
+        ],
+        "video": "SOU456",
+        "credit": "@RoyalBugandaChannel",
+        "testimonial": "The Southern region brings the elegance of tradition and royalty together."
+    }
+]
+
 @router.get("/")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "title": "Uganda Tours"})
+
+@router.get("/cultures", response_class=HTMLResponse)
+async def show_cultures(request: Request):
+    return templates.TemplateResponse("uganda_culture.html", {"request": request, "regions": regions})
 
 @router.get("/tours", response_class=HTMLResponse)
 async def tours_page(
@@ -492,41 +568,24 @@ async def process_booking(
         
 ## Viewing of the Booked tours        
 @router.get("/my-bookings", response_class=HTMLResponse)
-async def my_bookings(
+async def view_bookings(
     request: Request,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
-    if not user:
-        return RedirectResponse(url="/login")
-
-    # Calculate date threshold (30 days ago)
-    one_month_ago = datetime.utcnow() - timedelta(days=30)
-    
-    # Query bookings with filters
-    bookings = db.query(Booking).filter(
-        Booking.user_id == user.id,
-        Booking.deleted_at.is_(None),
-        or_(
-            Booking.payment_status != 'cancelled',
-            and_(
-                Booking.payment_status == 'cancelled',
-                Booking.cancelled_at >= one_month_ago
-            )
-        )
-    ).all()
-    
-    # Get current datetime for cancellation eligibility checks
-    current_datetime = datetime.utcnow()
+    # Get all bookings for the current user with tour details
+    bookings = db.query(Booking).options(joinedload(Booking.tour)).filter(
+        Booking.user_id == user.id
+    ).order_by(Booking.tour_date.desc()).all()
+    current_date = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
     
     return templates.TemplateResponse("my_bookings.html", {
         "request": request,
+        "user": user,
         "bookings": bookings,
-        "current_datetime": current_datetime,  # Ensure this name matches template
-        "title": "My Bookings",
-        "user": user
+        "current_date": current_date,
+        "title": "My Bookings"
     })
-# 
     
 # 
 
@@ -556,7 +615,6 @@ async def cancel_booking(
     
     # Update booking status
     booking.payment_status = "cancelled"
-    booking.cancelled_at = datetime.utcnow() 
     db.commit()
     
     # Send cancellation confirmation email
@@ -567,32 +625,6 @@ async def cancel_booking(
     )
     
     return RedirectResponse(url="/my-bookings", status_code=303)
-
-@router.post("/delete-booking/{booking_id}", response_class=RedirectResponse)
-async def delete_booking(
-    booking_id: int,
-    db: Session = Depends(get_db),
-    user: User = Depends(get_current_user)
-):
-    # Fetch booking that meets deletion criteria
-    booking = db.query(Booking).filter(
-        Booking.id == booking_id,
-        Booking.user_id == user.id,
-        Booking.payment_status == 'cancelled',  # Only allow deletion of cancelled bookings
-        Booking.deleted_at.is_(None)  # Not already deleted
-    ).first()
-    
-    if not booking:
-        raise HTTPException(status_code=404, detail="Booking not found")
-    
-    # Perform soft delete by setting deletion timestamp
-    booking.deleted_at = datetime.utcnow()
-    db.commit()
-    
-    return RedirectResponse(url="/my-bookings", status_code=303)
-   
-
-
 ## Download a tour booked receipt
 # @router.get("/download-ticket/{booking_id}")
 # async def download_ticket(
@@ -766,7 +798,6 @@ async def create_stripe_session(
             },
             success_url = f"{BASE_URL.rstrip('/')}/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url = f"{BASE_URL.rstrip('/')}/payment")
-        
 
         return JSONResponse({"id": session.id})
 

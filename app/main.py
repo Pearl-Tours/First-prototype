@@ -16,6 +16,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 # Middleware
 app.add_middleware(SessionMiddleware, secret_key="your_secret_key", session_cookie="session_id")
+
 #app.add_middleware(HTTPSRedirectMiddleware)
 
 # Include routes
