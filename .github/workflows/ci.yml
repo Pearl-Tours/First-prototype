@@ -1,0 +1,60 @@
+name: FastAPI Full CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 0 * * 0" # Run weekly on Sundays
+
+jobs:
+  test-lint-analyze:
+    runs-on: ubuntu-latest
+
+    permissions:
+      actions: read
+      contents: read
+      security-events: write # Required for CodeQL
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov flake8 black
+
+      - name: Run tests with coverage
+        run: |
+          pytest --cov=app --cov-report=term-missing
+
+      - name: Lint with flake8
+        run: |
+          flake8 app/ tests/ --max-line-length=88
+
+      - name: Check code formatting with Black
+        run: |
+          black --check app/ tests/
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Autobuild (for Python)
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Analyze code with CodeQL
+        uses: github/codeql-action/analyze@v2
