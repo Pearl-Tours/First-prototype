@@ -121,6 +121,7 @@ async def get_authenticated_user(user: User = Depends(get_current_user)) -> User
     return user
 
 # def notify_subscribers(db:Session, tour: Tour):
+#get it
 #     subscribers = db.query(User).filter(User.newsletter_subscribed == True).all()
 #     for subscriber in subscribers:
 #         send_tour_notification(subscriber.email, tour, subscriber.unsubscribe_token)
