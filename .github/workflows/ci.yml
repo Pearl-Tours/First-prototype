@@ -1,4 +1,4 @@
-name: CI - FastAPI
+name: CODE TESTING
 
 on:
   push:
