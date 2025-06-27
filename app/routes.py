@@ -387,10 +387,37 @@ async def forgot_password(request: Request, email: str = Form(...), db: Session 
         # Send email with the reset link
        # reset_link = f"http://localhost:8000/reset-password?token={reset_token}"
         reset_link = f"{BASE_URL.rstrip('/')}/reset-password?token={reset_token}"
-        subject = "Forgot Password"
-        body = f"Password reset Request, Click here to reset your password: {reset_link}"
+        subject = "Password Reset Request"
+        body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+                <table width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                <tr style="background-color: #003366; color: #ffffff;">
+                    <td style="padding: 20px; font-size: 18px;">
+                    Password Reset Request
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px;">
+                    <p>Dear {user.full_name},</p>
+                    <p>We received a request to reset your password. Please click the link below to proceed:</p>
+                    <p><a href="{reset_link}" style="background-color: #003366; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+                    <p>If you did not request this, please ignore this email or contact our support team.</p>
+                    <p>Best regards,<br>Pearl Tours Support Team</p>
+                    </td>
+                </tr>
+                <tr style="background-color: #f0f0f0; text-align: center;">
+                    <td style="padding: 10px; font-size: 12px; color: #777;">
+                    &copy; {datetime.now().year} Pearl Tours. All rights reserved.
+                    </td>
+                </tr>
+                </table>
+            </body>
+            </html>
+            """
+
         try:
-            send_email(user.email, subject, body) 
+            send_email(user.email, subject, body, is_html=True) 
         except Exception as e: 
             return templates.TemplateResponse("forgot_password.html", {"request": request, "error": f"Failed to send email: {str(e)}"})
 
@@ -651,10 +678,37 @@ async def cancel_booking(
     
     # Send cancellation confirmation email
     send_email(
-        user.email,
-        "Booking Cancelled",
-        f"Your booking for {booking.tour.title} on {booking.tour_date} has been cancelled.Your money will be refunded within 3-5 business days.Thank you for using our service!"
-    )
+    user.email,
+    "Booking Cancellation Confirmation",
+    f"""
+    <html>
+      <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+        <table width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+          <tr style="background-color: #003366; color: #ffffff;">
+            <td style="padding: 20px; font-size: 18px;">
+              Booking Cancellation Confirmation
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 20px;">
+              <p>Dear {user.full_name},</p>
+              <p>We regret to inform you that your booking for <strong>{booking.tour.title}</strong> on <strong>{booking.tour_date}</strong> has been cancelled.</p>
+              <p>A refund will be processed to your original payment method within 3–5 business days.</p>
+              <p>We apologize for any inconvenience this may have caused and thank you for choosing Pearl Tours.</p>
+              <p>Best regards,<br>Pearl Tours Support Team</p>
+            </td>
+          </tr>
+          <tr style="background-color: #f0f0f0; text-align: center;">
+            <td style="padding: 10px; font-size: 12px; color: #777;">
+              &copy; {datetime.now().year} Pearl Tours. All rights reserved.
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
+    """, is_html=True)
+
+
     
     return RedirectResponse(url="/my-bookings", status_code=303)
 
@@ -783,15 +837,42 @@ async def complete_booking(
         
         # Send confirmation email
         await send_email(
-            user.email,
-            "Booking Confirmed",
-            f"""Your booking details:
-            - Tour: {new_booking.tour.title}
-            - Date: {new_booking.tour_date}
-            - Participants: {new_booking.adults} adults, {new_booking.kids} kids
-            - Total: ${new_booking.total_price}"""
-        )
-        
+        user.email,
+        "Booking Confirmation",
+        f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+            <table width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            <tr style="background-color: #003366; color: #ffffff;">
+                <td style="padding: 20px; font-size: 18px;">
+                Booking Confirmation
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 20px;">
+                <p>Dear {user.full_name},</p>
+                <p>Thank you for booking with Pearl Tours! Here are your booking details:</p>
+                <ul style="padding-left: 20px;">
+                    <li><strong>Tour:</strong> {new_booking.tour.title}</li>
+                    <li><strong>Date:</strong> {new_booking.tour_date}</li>
+                    <li><strong>Participants:</strong> {new_booking.adults} adults, {new_booking.kids} kids</li>
+                    <li><strong>Total:</strong> ${new_booking.total_price}</li>
+                </ul>
+                <p>We look forward to providing you with a wonderful experience.</p>
+                <p>Best regards,<br>
+                Pearl Tours Support Team</p>
+                </td>
+            </tr>
+            <tr style="background-color: #f0f0f0; text-align: center;">
+                <td style="padding: 10px; font-size: 12px; color: #777;">
+                &copy; {datetime.now().year} Pearl Tours. All rights reserved.
+                </td>
+            </tr>
+            </table>
+        </body>
+        </html>
+        """, is_html=True)
+   
         # Clear session
         request.session.pop('booking', None)
         
@@ -904,14 +985,43 @@ async def payment_success(
         send_email(
             user.email,
             "Booking Confirmation",
-            f"""Your booking details:
-            Tour: {new_booking.tour.title}
-            Date: {new_booking.tour_date}
-            Adults: {new_booking.adults}
-            Children: {new_booking.kids}
-            Total: ${new_booking.total_price}
-            Payment ID: {session.payment_intent}"""
+            f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 20px;">
+                <table width="100%" style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                <tr style="background-color: #003366; color: #ffffff;">
+                    <td style="padding: 20px; font-size: 18px;">
+                    Booking Confirmation
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px;">
+                    <p>Dear {user.full_name},</p>
+                    <p>Thank you for booking with Pearl Tours! Here are your booking details:</p>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>Tour:</strong> {new_booking.tour.title}</li>
+                        <li><strong>Date:</strong> {new_booking.tour_date}</li>
+                        <li><strong>Adults:</strong> {new_booking.adults}</li>
+                        <li><strong>Children:</strong> {new_booking.kids}</li>
+                        <li><strong>Total:</strong> ${new_booking.total_price}</li>
+                        <li><strong>Payment ID:</strong> {session.payment_intent}</li>
+                    </ul>
+                    <p>We look forward to providing you with a wonderful experience.</p>
+                    <p>Best regards,<br>
+                    Pearl Tours Support Team</p>
+                    </td>
+                </tr>
+                <tr style="background-color: #f0f0f0; text-align: center;">
+                    <td style="padding: 10px; font-size: 12px; color: #777;">
+                    &copy; {datetime.now().year} Pearl Tours. All rights reserved.
+                    </td>
+                </tr>
+                </table>
+            </body>
+            </html>
+            """, is_html=True
         )
+
 
         return RedirectResponse(url="/confirmation", status_code=303)
 
