@@ -1,46 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmation - Uganda Tours</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking Confirmation - Pearl Tours</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        .confirmation-card {
-            max-width: 600px;
-            margin: 2rem auto;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            border-radius: 15px;
-        }
-        .checkmark {
-            font-size: 5rem;
-            color: #198754;
-        }
+      .confirmation-card {
+        max-width: 650px;
+        margin: 3rem auto;
+        border-radius: 20px;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .checkmark {
+        font-size: 5rem;
+        color: #198754;
+      }
+      .navbar-custom {
+        background-color: #003366 !important;
+      }
+      .navbar-nav .nav-link {
+        color: white !important;
+        transition: color 0.3s ease, transform 0.3s ease;
+      }
+      .navbar-nav .nav-link:hover {
+        color: #ffc107 !important;
+        transform: translateY(-2px);
+      }
+      .footer-link {
+        color: #ffffff;
+        text-decoration: none;
+      }
+      .footer-link:hover {
+        text-decoration: underline;
+        color: #ffc107 !important;
+      }
+      footer {
+        background-color: #003366;
+      }
+      footer .btn-info,
+      footer .btn-warning {
+        border-radius: 10px;
+        font-weight: 600;
+      }
     </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Uganda Tours</a>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <i class="bi bi-gem me-2"></i>Pearl Tours
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          aria-controls="navbarContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ms-auto align-items-center gap-3">
+            <li class="nav-item">
+              <a class="nav-link" href="/"
+                ><i class="bi bi-house-door-fill me-1"></i>Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/tours"
+                ><i class="bi bi-map-fill me-1"></i>Tours</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/support"
+                ><i class="bi bi-headset me-1"></i>Support</a
+              >
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
 
     <div class="container mt-5">
-        <div class="confirmation-card card text-center">
-            <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Booking Confirmed!</h4>
-            </div>
-            <div class="card-body">
-                <div class="checkmark mb-4">✓</div>
-                <h5 class="card-title">Thank you for your booking!</h5>
-                <p class="card-text">A confirmation email has been sent to your registered address.</p>
-                <div class="alert alert-info">
-                    <h6 class="mb-0">Keep this reference number for your records:</h6>
-                    <p class="mb-0"><strong>{{ payment_id }}</strong></p>
-                </div>
-                <a href="/tours" class="btn btn-primary">Back to Tours</a>
-            </div>
+      <div
+        class="confirmation-card card text-center border-0 shadow-lg rounded-4 overflow-hidden"
+      >
+        <div class="card-header text-white" style="background-color: #003366">
+          <h4 class="mb-0">
+            <i class="bi bi-check-circle-fill me-2"></i>Booking Confirmed!
+          </h4>
         </div>
+        <div class="card-body p-4 bg-light">
+          <div class="checkmark mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h5 class="card-title mb-2">Thank you for your booking!</h5>
+          <p class="card-text mb-3">
+            A confirmation email has been sent to your registered email address.
+          </p>
+          <div class="alert alert-info rounded-3">
+            <h6 class="mb-0">Keep this reference number:</h6>
+            <p class="mb-0 fw-bold">{{ payment_id }}</p>
+          </div>
+          <a href="/tours" class="btn btn-primary rounded-3 mt-3">
+            <i class="bi bi-arrow-left-circle me-1"></i>Back to Tours
+          </a>
+        </div>
+      </div>
     </div>
-</body>
+
+    <footer class="footer pt-5 pb-4 text-white mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 mb-4">
+            <h4 class="fw-bold"><i class="bi bi-gem me-2"></i>Pearl Tours</h4>
+            <p>
+              Discover Uganda’s beauty with our curated tours, cultural trips,
+              and wildlife adventures.
+            </p>
+          </div>
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Quick Links</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="/" class="footer-link"
+                  ><i class="bi bi-house-door-fill me-1"></i>Home</a
+                >
+              </li>
+              <li>
+                <a href="/tours" class="footer-link"
+                  ><i class="bi bi-map-fill me-1"></i>Tours</a
+                >
+              </li>
+              <li>
+                <a href="/support" class="footer-link"
+                  ><i class="bi bi-headset me-1"></i>Support</a
+                >
+              </li>
+              <li>
+                <a href="#about-us" class="footer-link"
+                  ><i class="bi bi-info-circle me-1"></i>About Us</a
+                >
+              </li>
+              <li>
+                <a href="#contact" class="footer-link"
+                  ><i class="bi bi-envelope me-1"></i>Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Partnerships</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-building me-1"></i>Serena Hotels</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-building me-1"></i>Protea Hotel</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-building me-1"></i>Mweya Safari Lodge</a
+                >
+              </li>
+            </ul>
+            <h6 class="fw-semibold mt-3">National Parks</h6>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-tree-fill me-1"></i>Queen Elizabeth NP</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-tree-fill me-1"></i>Bwindi Impenetrable NP</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-tree-fill me-1"></i>Murchison Falls NP</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Contact Us</h5>
+            <p><i class="bi bi-telephone-fill me-2"></i> +256 80004 36640</p>
+            <p><i class="bi bi-envelope-fill me-2"></i> info@pearltours.ug</p>
+            <p><i class="bi bi-geo-alt-fill me-2"></i> Kampala, Uganda</p>
+            <div class="mt-3 mb-3">
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-facebook"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-twitter"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-youtube"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-tiktok"></i
+              ></a>
+            </div>
+            <li class="nav-item list-unstyled">
+              {% if user %} {% if user.newsletter_subscribed %}
+              <form
+                action="/user/unsubscribe_newsletter"
+                method="post"
+                class="w-100"
+              >
+                <button type="submit" class="btn btn-warning w-100">
+                  Unsubscribe
+                </button>
+              </form>
+              {% else %}
+              <form action="/subscribe_newsletter" method="post" class="w-100">
+                <button type="submit" class="btn btn-info w-100">
+                  Subscribe
+                </button>
+              </form>
+              {% endif %} {% else %}
+              <a href="/login" class="btn btn-info w-100 text-center"
+                >Get Updates</a
+              >
+              {% endif %}
+            </li>
+          </div>
+        </div>
+        <div class="text-center pt-3 border-top mt-4">
+          <small>&copy; 2025 Pearl Tours. All rights reserved.</small>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>

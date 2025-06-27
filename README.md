@@ -53,6 +53,7 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
     ```bash
     python -m venv venv
     source venv/Scripts/activate  # On Windows: venv\Scripts\activate
+    source venv/bin/activate  # On MacOS
     ```
 
 3.  **Install dependencies:**
@@ -86,14 +87,15 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 3.  **Build and run the services:**
 
     ```bash
-    docker-compose up --build
+    docker run -it -p 3000:8000 $(docker build -q -t pearltours .)
     ```
 
     The application will be accessible, usually at `http://localhost:8000` (or as configured in `docker-compose.yaml`).
 
 4.  **To stop the services:**
     ```bash
-    docker-compose down
+    Press Ctrl C
+    or docker ps get the conatiner id then docker stop <container_id>
     ```
 
 ## Contributing

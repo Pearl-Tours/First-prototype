@@ -5,118 +5,312 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment - Pearl Tours</title>
     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
     <style>
       .payment-card {
-        max-width: 600px;
-        margin: 2rem auto;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        border-radius: 15px;
-      }
-      .payment-methods {
-        display: grid;
-        gap: 1rem;
-        margin: 2rem 0;
-      }
-      #paypal-button-container,
-      #stripe-button {
-        min-height: 50px;
+        max-width: 650px;
+        margin: 3rem auto;
+        border-radius: 20px;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
+        overflow: hidden;
       }
       .stripe-btn {
         background: #635bff;
         color: white;
         border: none;
         padding: 12px;
-        border-radius: 4px;
+        border-radius: 8px;
         cursor: pointer;
         width: 100%;
         font-weight: bold;
       }
       .booking-details {
-        background: #f8f9fa;
-        border-radius: 10px;
+        background: #ffffff;
+        border-radius: 15px;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
-      }
-      .price-breakdown {
-        border-top: 1px dashed #dee2e6;
-        padding-top: 0.5rem;
-        margin-top: 0.5rem;
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.1);
       }
       .premium-badge {
         background-color: #0d6efd;
         color: white;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.25rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.4rem;
         font-size: 0.75rem;
         font-weight: bold;
+      }
+      .navbar-custom {
+        background-color: #003366 !important;
+      }
+      .navbar-nav .nav-link {
+        color: white !important;
+        transition: color 0.3s ease, transform 0.3s ease;
+      }
+      .navbar-nav .nav-link:hover {
+        color: #ffc107 !important;
+        transform: translateY(-2px);
+      }
+      .footer-link {
+        color: #ffffff;
+        text-decoration: none;
+      }
+      .footer-link:hover {
+        text-decoration: underline;
+        color: #ffc107 !important;
+      }
+      footer {
+        background-color: #003366;
+      }
+      footer .btn-info,
+      footer .btn-warning {
+        border-radius: 10px;
+        font-weight: 600;
       }
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
       <div class="container">
-        <a class="navbar-brand" href="/">Pearl Tours</a>
+        <a class="navbar-brand" href="/">
+          <i class="bi bi-gem me-2"></i>Pearl Tours
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          aria-controls="navbarContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ms-auto align-items-center gap-3">
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="bi bi-house-door-fill me-1"></i>Home
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/tours">
+                <i class="bi bi-map-fill me-1"></i>Tours
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/support">
+                <i class="bi bi-headset me-1"></i>Support
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
 
     <div class="container mt-5">
-      <div class="payment-card card">
-        <div class="card-header bg-success text-white">
-          <h4 class="mb-0">Complete Your Booking</h4>
+      <div
+        class="payment-card card border-0 shadow-lg rounded-4 overflow-hidden"
+      >
+        <div class="card-header text-white" style="background-color: #003366">
+          <h4 class="mb-0">
+            <i class="bi bi-credit-card me-2"></i>Complete Your Booking
+          </h4>
         </div>
-        <div class="card-body">
-          <!-- Booking Summary Section -->
-          <div class="booking-details">
-            <h5 class="card-title">{{ tour_title }}</h5>
+        <div class="card-body p-4 bg-light">
+          <div class="booking-details mb-4">
+            <h5 class="card-title mb-3">
+              <i class="bi bi-bag-check me-1 text-success"></i>{{ tour_title }}
+            </h5>
 
             {% if is_private %}
             <div class="d-flex align-items-center mb-2">
               <span class="premium-badge me-2">PRIVATE TOUR</span>
-              <small class="text-muted">+35% premium applied</small>
+              <small class="text-muted">
+                <i class="bi bi-star-fill text-warning me-1"></i>35% premium
+                applied
+              </small>
             </div>
             {% endif %}
 
-            <div class="price-breakdown">
-              <div class="d-flex justify-content-between">
-                <span>Base Price:</span>
+            <div class="border-top pt-3 mt-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span><i class="bi bi-cash-coin me-1"></i>Base Price:</span>
                 <span>${{ "%.2f"|format(base_price) }} per person</span>
               </div>
               {% if is_private %}
-              <div class="d-flex justify-content-between">
-                <span>Private Tour Premium:</span>
+              <div class="d-flex justify-content-between mb-2">
+                <span
+                  ><i class="bi bi-plus-circle me-1"></i>Private Premium:</span
+                >
                 <span>+35%</span>
               </div>
               {% endif %}
-              <div class="d-flex justify-content-between mt-2 fw-bold">
-                <span>Total Amount:</span>
+              <div
+                class="d-flex justify-content-between fw-bold mt-2 border-top pt-2"
+              >
+                <span><i class="bi bi-receipt me-1"></i>Total:</span>
                 <span>${{ "%.2f"|format(total_price) }}</span>
               </div>
             </div>
           </div>
 
           <!-- Payment Methods -->
-          <div class="text-center">
+          <div class="text-center mt-3">
             <div class="payment-methods">
-              <!-- Stripe Button -->
-              <button id="stripe-button" class="stripe-btn">
-                Pay with Credit/Debit Card
+              <button id="stripe-button" class="stripe-btn rounded-3">
+                <i class="bi bi-credit-card-fill me-1"></i>Pay with Card
               </button>
-
-              <!-- PayPal Button -->
               <div id="paypal-button-container"></div>
             </div>
-
-            <div class="text-muted small mt-4">
-              <p>Secure payments processed by our partners</p>
-              <p>Need help? Contact support@ugandatours.com</p>
+            <div class="small text-muted mt-3">
+              <i class="bi bi-shield-lock me-1"></i>Secure payments powered by
+              our trusted partners
+            </div>
+            <div class="small text-muted">
+              <i class="bi bi-question-circle me-1"></i>Need help?
+              support@ugandatours.com
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <footer class="footer pt-5 pb-4 text-white mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3 mb-4">
+            <h4 class="fw-bold"><i class="bi bi-gem me-2"></i>Pearl Tours</h4>
+            <p>
+              Discover Uganda's beauty with our curated tours, cultural trips,
+              and wildlife adventures.
+            </p>
+          </div>
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Quick Links</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="/" class="footer-link"
+                  ><i class="bi bi-house-door-fill me-1"></i>Home</a
+                >
+              </li>
+              <li>
+                <a href="/tours" class="footer-link"
+                  ><i class="bi bi-map-fill me-1"></i>Tours</a
+                >
+              </li>
+              <li>
+                <a href="/support" class="footer-link"
+                  ><i class="bi bi-headset me-1"></i>Support</a
+                >
+              </li>
+              <li>
+                <a href="#about-us" class="footer-link"
+                  ><i class="bi bi-info-circle me-1"></i>About Us</a
+                >
+              </li>
+              <li>
+                <a href="#contact" class="footer-link"
+                  ><i class="bi bi-envelope me-1"></i>Contact</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Partnerships</h5>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-building me-1"></i>Serena Hotels</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-building me-1"></i>Protea Hotel</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-building me-1"></i>Mweya Safari Lodge</a
+                >
+              </li>
+            </ul>
+            <h6 class="fw-semibold mt-3">National Parks</h6>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-tree-fill me-1"></i>Queen Elizabeth NP</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-tree-fill me-1"></i>Bwindi Impenetrable NP</a
+                >
+              </li>
+              <li>
+                <a href="#" class="footer-link"
+                  ><i class="bi bi-tree-fill me-1"></i>Murchison Falls NP</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-4">
+            <h5 class="fw-semibold">Contact Us</h5>
+            <p><i class="bi bi-telephone-fill me-2"></i> +256 700 123 456</p>
+            <p><i class="bi bi-envelope-fill me-2"></i> info@pearltours.ug</p>
+            <p><i class="bi bi-geo-alt-fill me-2"></i> Kampala, Uganda</p>
+            <div class="mt-3 mb-3">
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-facebook"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-instagram"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-twitter"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-youtube"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="bi bi-tiktok"></i
+              ></a>
+            </div>
+            <li class="nav-item list-unstyled">
+              {% if user %} {% if user.newsletter_subscribed %}
+              <form
+                action="/user/unsubscribe_newsletter"
+                method="post"
+                class="w-100"
+              >
+                <button type="submit" class="btn btn-warning w-100">
+                  Unsubscribe
+                </button>
+              </form>
+              {% else %}
+              <form action="/subscribe_newsletter" method="post" class="w-100">
+                <button type="submit" class="btn btn-info w-100">
+                  Subscribe
+                </button>
+              </form>
+              {% endif %} {% else %}
+              <a href="/login" class="btn btn-info w-100 text-center"
+                >Get Updates</a
+              >
+              {% endif %}
+            </li>
+          </div>
+        </div>
+        <div class="text-center pt-3 border-top mt-4">
+          <small>&copy; 2025 Pearl Tours. All rights reserved.</small>
+        </div>
+      </div>
+    </footer>
 
     <!-- Stripe Script -->
     <script src="https://js.stripe.com/v3/"></script>
@@ -124,71 +318,59 @@
     <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD&disable-funding=credit,card"></script>
 
     <script>
-      // Stripe Integration
       const stripe = Stripe("{{ stripe_public_key }}");
-
       document.getElementById('stripe-button').addEventListener('click', async () => {
-          try {
-              const response = await fetch('/create-stripe-session', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  }
-              });
-
-              const { id: sessionId } = await response.json();
-              await stripe.redirectToCheckout({ sessionId });
-
-          } catch (error) {
-              console.error('Stripe error:', error);
-              alert('Payment processing failed. Please try again.');
-          }
+        try {
+          const response = await fetch('/create-stripe-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const { id: sessionId } = await response.json();
+          await stripe.redirectToCheckout({ sessionId });
+        } catch (error) {
+          console.error('Stripe error:', error);
+          alert('Payment processing failed. Please try again.');
+        }
       });
 
-      // PayPal Integration
       paypal.Buttons({
-          style: {
-              layout: 'vertical',
-              color: 'gold',
-              shape: 'rect',
-              label: 'paypal'
-          },
-          createOrder: function(data, actions) {
-              return actions.order.create({
-                  purchase_units: [{
-                      amount: {
-                          value: '{{ total_price }}',
-                          currency_code: 'USD'
-                      },
-                      description: '{{ tour_title }} Tour Booking - {% if is_private %}Private{% else %}Normal{% endif %} Tour'
-                  }]
-              });
-          },
-          onApprove: function(data, actions) {
-              return actions.order.capture().then(function(details) {
-                  fetch('/complete_booking', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                          paymentID: details.id,
-                          status: details.status,
-                          is_private: {% if is_private %}true{% else %}false{% endif %}
-                      })
-                  }).then(response => {
-                      if (response.ok) {
-                          window.location.href = '/confirmation';
-                      } else {
-                          alert('Payment processing failed');
-                      }
-                  });
-              });
-          },
-          onError: function(err) {
-              console.error('PayPal error:', err);
-              alert('Payment processing failed. Please try again.');
-          }
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal'
+        },
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: '{{ total_price }}', currency_code: 'USD' },
+              description: '{{ tour_title }} Tour Booking - {% if is_private %}Private{% else %}Normal{% endif %} Tour'
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            fetch('/complete_booking', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                paymentID: details.id,
+                status: details.status,
+                is_private: {% if is_private %}true{% else %}false{% endif %}
+              })
+            }).then(response => {
+              if (response.ok) {
+                window.location.href = '/confirmation';
+              } else {
+                alert('Payment processing failed');
+              }
+            });
+          });
+        },
+        onError: function(err) {
+          console.error('PayPal error:', err);
+          alert('Payment processing failed. Please try again.');
+        }
       }).render('#paypal-button-container');
     </script>
   </body>
