@@ -22,13 +22,23 @@ services:
     build: .
     ports:
       - "8000:8000"
-    env_file:
-      - .env
+    
 
     environment:
       - DATABASE_URL=mysql+pymysql://admin:1237tyu@db:3306/tourdb
       - SECRET_KEY=your-secret-key-here
       - DEBUG=False
+      - SECRET_KEY=your-secret-key-here
+      - DEBUG=False
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
+      - PAYPAL_MODE=${PAYPAL_MODE}
+     
     depends_on:
       db:
         condition: service_healthy
