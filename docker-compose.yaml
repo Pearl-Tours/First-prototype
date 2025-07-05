@@ -3,11 +3,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=tourdb
-      - MYSQL_USER=admin
-      - MYSQL_PASSWORD=1237tyu
-      - MYSQL_ROOT_HOST=%
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tourdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: "1237tyu"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -19,17 +18,17 @@ services:
       - app-network
 
   app:
-    build: .
+    build: 
+      context: .
+      args:
+        - BASE_URL=${BASE_URL}  # Pass as build argument
     ports:
       - "8000:8000"
-    
-
     environment:
-      - DATABASE_URL=mysql+pymysql://admin:1237tyu@db:3306/tourdb
-      - SECRET_KEY=your-secret-key-here
-      - DEBUG=False
-      - SECRET_KEY=your-secret-key-here
-      - DEBUG=False
+      - BASE_URL=${BASE_URL}  # Pass as runtime environment
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
       - SMTP_SERVER=${SMTP_SERVER}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
@@ -38,12 +37,12 @@ services:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - PAYPAL_CLIENT_ID=${PAYPAL_CLIENT_ID}
       - PAYPAL_MODE=${PAYPAL_MODE}
-     
     depends_on:
       db:
         condition: service_healthy
     command: >
-      sh -c "while ! mysqladmin ping -h db --silent; do sleep 1; done &&
+      sh -c "echo 'BASE_URL = $BASE_URL' &&
+             while ! mysqladmin ping -h db --silent; do sleep 1; done &&
              uvicorn app.main:app --host 0.0.0.0 --port 8000"
     networks:
       - app-network
