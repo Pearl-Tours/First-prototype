@@ -74,7 +74,7 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 
 5.  **Run the application:**
     ```bash
-    uvicorn app.main:app --reload --host localhost
+    python -m uvicorn app.main:app --reload --host localhost
     ```
     The application should typically be accessible at `http://localhost:8000`.
 
@@ -87,9 +87,14 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 3.  **Build and run the services:**
 
     ```bash
-    docker run -it -p 3000:8000 $(docker build -q -t pearltours .)
+    chmod +x start.sh && ./start.sh
     ```
-
+4. Creating an Admin in docker
+   
+   ```bash
+    docker exec -it first-prototype-app-1 python -m app.create_admin
+    ```
+6. 
     The application will be accessible, usually at `http://localhost:8000` (or as configured in `docker-compose.yaml`).
 
 4.  **To stop the services:**
