@@ -19,14 +19,14 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
 │   ├── models.py           # Database models
 │   ├── routes.py           # Application routes
 │   └── ...                 # Other Python modules
-├── static/                 # Public static assets (alternative location, seems project uses app/static)
-├── test.db                 # SQLite database file (example)
+├── static/                 # Public static assets
+├── test.db                 # SQLite database file
 ├── .gitignore
 ├── Dockerfile              # Docker configuration for the application
 ├── docker-compose.yaml     # Docker Compose configuration
 ├── requirements.txt        # Python dependencies
 └── README.md               # This file
-|__ Tests                   # code testing
+|__ Tests                   # pytest code testing
 |__ .github\workflows       # Github actions workflows
 ```
 
@@ -89,15 +89,16 @@ Pearl Tours is a web application designed to showcase and manage tour packages f
     ```bash
     chmod +x start.sh && ./start.sh
     ```
-4. Creating an Admin in docker
-   
-   ```bash
-    docker exec -it first-prototype-app-1 python -m app.create_admin
-    ```
-6. 
-    The application will be accessible, usually at `http://localhost:8000` (or as configured in `docker-compose.yaml`).
 
-4.  **To stop the services:**
+4.  Creating an Admin in docker
+
+    ```bash
+     docker exec -it first-prototype-app-1 python -m app.create_admin
+    ```
+
+5.  The application will be accessible, usually at `http://localhost:8000` (or as configured in `docker-compose.yaml`).
+
+6.  **To stop the services:**
     ```bash
     Press Ctrl C
     or docker ps get the conatiner id then docker stop <container_id>
