@@ -1,380 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ title }}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link href="/static/css/style.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css"
+    />
     <style>
-        .booking-card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            overflow: hidden;
-            transition: transform 0.3s;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        .booking-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        .booking-header {
-            background-color: #2a9d8f;
-            color: white;
-            padding: 15px 20px;
-        }
-        .booking-body {
-            padding: 20px;
-        }
-        .tour-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #eee;
-        }
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .status-confirmed {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .status-pending {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        .status-cancelled {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-        .cancellation-note {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-top: 5px;
-            font-style: italic;
-        }
-        .detail-row {
-            margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .detail-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        .booking-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: #2a9d8f;
-        }
-        .section-title {
-            border-bottom: 2px solid #2a9d8f;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            color: #343a40;
-        }
-        .no-bookings {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 40px 20px;
-            text-align: center;
-        }
-        .btn-action {
-            min-width: 120px;
-        }
-        .btn-remove {
-            min-width: 120px;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-        .btn-remove:hover {
-            background-color: #e2b3b8;
-            border-color: #e2b3b8;
-            color: #721c24;
-        }
+      :root {
+        --company-blue: #003366;
+      }
+
+      .booking-card {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        overflow: hidden;
+        transition: transform 0.3s;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .booking-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .booking-header {
+        background-color: var(--company-blue);
+        color: white;
+        padding: 15px 20px;
+      }
+
+      .booking-body {
+        padding: 20px;
+      }
+
+      .tour-image {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #eee;
+      }
+
+      .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .status-confirmed {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-cancelled {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+      }
+
+      .cancellation-note {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 5px;
+        font-style: italic;
+      }
+
+      .detail-row {
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .detail-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .booking-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: var(--company-blue);
+      }
+
+      .section-title {
+        border-bottom: 2px solid var(--company-blue);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+        color: #343a40;
+      }
+
+      .no-bookings {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      .btn-primary {
+        background-color: var(--company-blue);
+        border-color: var(--company-blue);
+      }
+
+      .btn-primary:hover {
+        background-color: #002244;
+        border-color: #002244;
+      }
+
+      .btn-outline-primary {
+        color: var(--company-blue);
+        border-color: var(--company-blue);
+      }
+
+      .btn-outline-primary:hover {
+        background-color: var(--company-blue);
+        color: white;
+      }
+
+      .btn-action {
+        min-width: 120px;
+      }
+
+      .btn-remove {
+        min-width: 120px;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+      }
+
+      .btn-remove:hover {
+        background-color: #e2b3b8;
+        border-color: #e2b3b8;
+        color: #721c24;
+      }
+
+      footer.bg-dark {
+        background-color: var(--company-blue) !important;
+      }
+
+      .navbar-dark.bg-dark {
+        background-color: var(--company-blue) !important;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="/">Uganda Tours</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tours">Tours</a>
-                    </li>
-                    {% if user and user.is_admin %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/dashboard">Admin Dashboard</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user %}
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/my-bookings">My Bookings</a>
-                    </li>
-                    {% endif %}
-                    {% if user %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">Logout</a>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/login">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/signup">Signup</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </div>
+      <div class="container">
+        <a class="navbar-brand" href="/">Pearl Tours</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/tours">Tours</a>
+            </li>
+            {% if user and user.is_admin %}
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/dashboard">Admin Dashboard</a>
+            </li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav">
+            {% if user %}
+            <li class="nav-item">
+              <a class="nav-link active" href="/my-bookings">My Bookings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/signup">Signup</a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
+      </div>
     </nav>
 
     <div class="container py-5">
-        <h1 class="section-title">My Bookings</h1>
-        
-        {% if bookings %}
-            <div class="row">
-                {% for booking in bookings %}
-                <div class="col-lg-6 mb-4">
-                    <div class="booking-card" id="booking-card-{{ booking.id }}">
-                        <div class="booking-header d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-calendar-check me-2"></i>
-                                <h5 class="mb-0">{{ booking.tour.title }}</h5>
-                            </div>
-                            <span class="status-badge status-{{ booking.payment_status|lower }}">
-                                {{ booking.payment_status|capitalize }}
-                            </span>
-                        </div>
-                        
-                        <div class="booking-body">
-                            <div class="row">
-                                <div class="col-md-5 mb-3 mb-md-0">
-                                    {% if booking.tour.images %}
-                                        <img src="{{ booking.tour.images[0].image_url }}" 
-                                             alt="{{ booking.tour.title }}" 
-                                             class="tour-image">
-                                    {% else %}
-                                        <img src="/static/images/default-tour.jpg" 
-                                             alt="Default tour image" 
-                                             class="tour-image">
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="col-md-7">
-                                    <div class="booking-title">Booking Details</div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <i class="bi bi-calendar me-1"></i>
-                                                <strong>Tour Date:</strong>
-                                            </div>
-                                            <div>{{ booking.tour_date.strftime('%B %d, %Y') }}</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <i class="bi bi-people me-1"></i>
-                                                <strong>Participants:</strong>
-                                            </div>
-                                            <div>
-                                                {{ booking.adults }} adult(s), 
-                                                {{ booking.kids }} child(ren)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <i class="bi bi-currency-dollar me-1"></i>
-                                                <strong>Total Price:</strong>
-                                            </div>
-                                            <div>${{ booking.total_price|round(2) }}</div>
-                                        </div>
-                                    </div>
-                                    {% if booking.donation %}
-<div class="detail-row">
-    <div class="d-flex justify-content-between">
-        <div>
-            <i class="bi bi-heart-fill me-1 text-danger"></i>
-            <strong>Donation:</strong>
-        </div>
-        <div>${{ booking.donation|round(2) }}</div>
-    </div>
-</div>
-{% endif %}
-                                    
-                                    <div class="detail-row">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <i class="bi bi-clock me-1"></i>
-                                                <strong>Booked On:</strong>
-                                            </div>
-                                            <div>{{ booking.created_at.strftime('%B %d, %Y') }}</div>
-                                        </div>
-                                    </div>
-                                    
-                                    {% if booking.payment_status == 'cancelled' %}
-                                    <div class="detail-row">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <i class="bi bi-x-circle me-1"></i>
-                                                <strong>Cancelled On:</strong>
-                                            </div>
-                                            <div>
-                                                {% if booking.cancelled_at %}
-                                                    {{ booking.cancelled_at.strftime('%B %d, %Y') }}
-                                                {% else %}
-                                                    Not available
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                    
-                                    <div class="action-buttons mt-3">
-                                        <a href="/book/{{ booking.tour.id }}" 
-                                           class="btn btn-sm btn-outline-primary btn-action">
-                                            <i class="bi bi-arrow-repeat me-1"></i>Book Again
-                                        </a>
-                                        
-                                        {% if booking.payment_status == 'completed' %}
-                                        <button onclick="downloadTicket({{ booking.id }})" 
-                                                class="btn btn-sm btn-outline-success btn-action">
-                                            <i class="bi bi-download me-1"></i>Download Ticket
-                                        </button>
-                                        {% endif %}
-                                        
-                                        {% if booking.payment_status in ['completed', 'pending'] and booking.tour_date > current_datetime %}
-                                        <form action="/cancel-booking/{{ booking.id }}" method="post">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger btn-action">
-                                                <i class="bi bi-x-circle me-1"></i>Cancel Booking
-                                            </button>
-                                            <div class="cancellation-note">
-                                                Cancel up to 24 hours before tour
-                                            </div>
-                                        </form>
-                                        {% endif %}
-                                        
-                                        <!-- NEW: Remove button for cancelled bookings -->
-                                        {% if booking.payment_status == 'cancelled' %}
-                                        <form action="/delete-booking/{{ booking.id }}" method="post">
-                                            <button type="submit" class="btn btn-sm btn-remove btn-action">
-                                                <i class="bi bi-trash me-1"></i>Remove
-                                            </button>
-                                        </form>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+      <h1 class="section-title">My Bookings</h1>
+
+      {% if bookings %}
+      <div class="row">
+        {% for booking in bookings %}
+        <div class="col-lg-6 mb-4">
+          <div class="booking-card" id="booking-card-{{ booking.id }}">
+            <div
+              class="booking-header d-flex justify-content-between align-items-center"
+            >
+              <div class="d-flex align-items-center">
+                <i class="bi bi-calendar-check me-2"></i>
+                <h5 class="mb-0">{{ booking.tour.title }}</h5>
+              </div>
+              <span
+                class="status-badge status-{{ booking.payment_status|lower }}"
+                >{{ booking.payment_status|capitalize }}</span
+              >
+            </div>
+            <div class="booking-body">
+              <div class="row">
+                <div class="col-md-5 mb-3 mb-md-0">
+                  {% if booking.tour.images %}
+                  <img
+                    src="{{ booking.tour.images[0].image_url }}"
+                    alt="{{ booking.tour.title }}"
+                    class="tour-image"
+                  />
+                  {% else %}
+                  <img
+                    src="/static/images/default-tour.jpg"
+                    alt="Default tour image"
+                    class="tour-image"
+                  />
+                  {% endif %}
+                </div>
+                <div class="col-md-7">
+                  <div class="booking-title">Booking Details</div>
+
+                  <div class="detail-row">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <i class="bi bi-calendar me-1"></i
+                        ><strong>Tour Date:</strong>
+                      </div>
+                      <div>{{ booking.tour_date.strftime('%B %d, %Y') }}</div>
                     </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <i class="bi bi-people me-1"></i
+                        ><strong>Participants:</strong>
+                      </div>
+                      <div>
+                        {{ booking.adults }} adult(s), {{ booking.kids }}
+                        child(ren)
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <i class="bi bi-currency-dollar me-1"></i
+                        ><strong>Total Price:</strong>
+                      </div>
+                      <div>${{ booking.total_price|round(2) }}</div>
+                    </div>
+                  </div>
+
+                  {% if booking.donation %}
+                  <div class="detail-row">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <i class="bi bi-heart-fill me-1 text-danger"></i
+                        ><strong>Donation:</strong>
+                      </div>
+                      <div>${{ booking.donation|round(2) }}</div>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  <div class="detail-row">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <i class="bi bi-clock me-1"></i
+                        ><strong>Booked On:</strong>
+                      </div>
+                      <div>{{ booking.created_at.strftime('%B %d, %Y') }}</div>
+                    </div>
+                  </div>
+
+                  {% if booking.payment_status == 'cancelled' %}
+                  <div class="detail-row">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <i class="bi bi-x-circle me-1"></i
+                        ><strong>Cancelled On:</strong>
+                      </div>
+                      <div>
+                        {% if booking.cancelled_at %}{{
+                        booking.cancelled_at.strftime('%B %d, %Y') }}{% else
+                        %}Not available{% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  <div class="action-buttons mt-3">
+                    <a
+                      href="/book/{{ booking.tour.id }}"
+                      class="btn btn-sm btn-outline-primary btn-action"
+                    >
+                      <i class="bi bi-arrow-repeat me-1"></i>Book Again
+                    </a>
+
+                    {% if booking.payment_status == 'completed' %}
+                    <button
+                      onclick="downloadTicket({{ booking.id }})"
+                      class="btn btn-sm btn-outline-success btn-action"
+                    >
+                      <i class="bi bi-download me-1"></i>Download Ticket
+                    </button>
+                    {% endif %} {% if booking.payment_status in ['completed',
+                    'pending'] and booking.tour_date > current_datetime %}
+                    <form
+                      action="/cancel-booking/{{ booking.id }}"
+                      method="post"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-outline-danger btn-action"
+                      >
+                        <i class="bi bi-x-circle me-1"></i>Cancel Booking
+                      </button>
+                      <div class="cancellation-note">
+                        Cancel up to 24 hours before tour
+                      </div>
+                    </form>
+                    {% endif %} {% if booking.payment_status == 'cancelled' %}
+                    <form
+                      action="/delete-booking/{{ booking.id }}"
+                      method="post"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-remove btn-action"
+                      >
+                        <i class="bi bi-trash me-1"></i>Remove
+                      </button>
+                    </form>
+                    {% endif %}
+                  </div>
                 </div>
-                {% endfor %}
+              </div>
             </div>
-        {% else %}
-            <div class="no-bookings">
-                <div class="mb-4">
-                    <i class="bi bi-calendar-x" style="font-size: 4rem; color: #6c757d;"></i>
-                </div>
-                <h2 class="mb-3">You haven't made any bookings yet</h2>
-                <p class="lead mb-4">Explore our amazing tours and book your next adventure!</p>
-                <a href="/tours" class="btn btn-primary btn-lg">
-                    <i class="bi bi-compass me-2"></i>Browse Available Tours
-                </a>
-            </div>
-        {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="no-bookings">
+        <div class="mb-4">
+          <i
+            class="bi bi-calendar-x"
+            style="font-size: 4rem; color: #6c757d"
+          ></i>
+        </div>
+        <h2 class="mb-3">You haven't made any bookings yet</h2>
+        <p class="lead mb-4">
+          Explore our amazing tours and book your next adventure!
+        </p>
+        <a href="/tours" class="btn btn-primary btn-lg">
+          <i class="bi bi-compass me-2"></i>Browse Available Tours
+        </a>
+      </div>
+      {% endif %}
     </div>
 
     <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <h5>Uganda Tours</h5>
-                    <p>Experience the beauty and adventure of Uganda with our expertly crafted tours.</p>
-                </div>
-                <div class="col-md-3 mb-3 mb-md-0">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/tours" class="text-white">Tours</a></li>
-                        <li><a href="/contact" class="text-white">Contact Us</a></li>
-                        <li><a href="/faq" class="text-white">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Contact</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="bi bi-envelope me-2"></i> info@ugandatours.com</li>
-                        <li><i class="bi bi-telephone me-2"></i> +256 123 456 789</li>
-                        <li><i class="bi bi-geo-alt me-2"></i> Kampala, Uganda</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="text-center mt-4 pt-3 border-top border-secondary">
-                <p>&copy; 2023 Uganda Tours. All rights reserved.</p>
-            </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <h5>Uganda Tours</h5>
+            <p>
+              Experience the beauty and adventure of Uganda with our expertly
+              crafted tours.
+            </p>
+          </div>
+          <div class="col-md-3 mb-3 mb-md-0">
+            <h5>Quick Links</h5>
+            <ul class="list-unstyled">
+              <li><a href="/tours" class="text-white">Tours</a></li>
+              <li><a href="/contact" class="text-white">Contact Us</a></li>
+              <li><a href="/faq" class="text-white">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3">
+            <h5>Contact</h5>
+            <ul class="list-unstyled">
+              <li><i class="bi bi-envelope me-2"></i> info@ugandatours.com</li>
+              <li><i class="bi bi-telephone me-2"></i> +256 123 456 789</li>
+              <li><i class="bi bi-geo-alt me-2"></i> Kampala, Uganda</li>
+            </ul>
+          </div>
         </div>
+        <div class="text-center mt-4 pt-3 border-top border-secondary">
+          <p>&copy; 2023 Uganda Tours. All rights reserved.</p>
+        </div>
+      </div>
     </footer>
 
-    <!-- JS libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
-        function downloadTicket(bookingId) {
-            const element = document.getElementById(`booking-card-${bookingId}`);
-            const opt = {
-                margin:       0.3,
-                filename:     `ticket_${bookingId}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        }
+      function downloadTicket(bookingId) {
+        const element = document.getElementById(`booking-card-${bookingId}`);
+        const opt = {
+          margin: 0.3,
+          filename: `ticket_${bookingId}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+        html2pdf().set(opt).from(element).save();
+      }
 
-        // Add confirmation for cancellation
-        document.querySelectorAll('.btn-outline-danger').forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (!confirm('Are you sure you want to cancel this booking?')) {
-                    e.preventDefault();
-                }
-            });
+      document.querySelectorAll(".btn-outline-danger").forEach((button) => {
+        button.addEventListener("click", function (e) {
+          if (!confirm("Are you sure you want to cancel this booking?")) {
+            e.preventDefault();
+          }
         });
-        
-        // NEW: Add confirmation for delete action
-        document.querySelectorAll('form[action^="/delete-booking"]').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                if (!confirm('Are you sure you want to permanently remove this booking from your history?')) {
-                    e.preventDefault();
-                }
-            });
+      });
+
+      document
+        .querySelectorAll('form[action^="/delete-booking"]')
+        .forEach((form) => {
+          form.addEventListener("submit", function (e) {
+            if (
+              !confirm(
+                "Are you sure you want to permanently remove this booking from your history?"
+              )
+            ) {
+              e.preventDefault();
+            }
+          });
         });
     </script>
-</body>
+  </body>
 </html>
