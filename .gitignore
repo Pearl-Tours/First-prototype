@@ -3,6 +3,7 @@ venv/
 
 # Ignore environment variable files
 .env
+
 htmlcov/
 
 # Ignore common Python artifacts
